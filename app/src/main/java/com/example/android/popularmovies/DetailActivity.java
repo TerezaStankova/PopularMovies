@@ -7,6 +7,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.example.android.popularmovies.utilities.JSONUtils;
 import com.squareup.picasso.Picasso;
@@ -14,49 +16,17 @@ import  com.example.android.popularmovies.model.Movie;
 
 public class DetailActivity extends AppCompatActivity {
 
-    public static final String EXTRA_POSITION = "extra_position";
-    private static final int DEFAULT_POSITION = -1;
-
-    private String mForecast;
-    private TextView mWeatherDisplay;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
-        mWeatherDisplay = (TextView) findViewById(R.id.title_tv);
-
-        Intent intentThatStartedThisActivity = getIntent();
-
-        if (intentThatStartedThisActivity != null) {
-            if (intentThatStartedThisActivity.hasExtra(Intent.EXTRA_TEXT)) {
-                mForecast = intentThatStartedThisActivity.getStringExtra(Intent.EXTRA_TEXT);
-                mWeatherDisplay.setText(mForecast);
-            }
-        }
-
         ImageView posterIv = findViewById(R.id.image_iv);
 
-        Intent intent = getIntent();
-        if (intent == null) {
-            closeOnError();
-        }
-
-        int position = intent.getIntExtra(EXTRA_POSITION, DEFAULT_POSITION);
-        if (position == DEFAULT_POSITION) {
-            // EXTRA_POSITION not found in intent
-            closeOnError();
-            return;
-        }
-
-        //String[] movies = getResources().getStringArray(R.array.sandwich_details);
-        String[] movies = null;
-        String json = movies[position];
-        Movie movie = JSONUtils.parseMovieJson(json);
+        Movie movie = (Movie) getIntent().getParcelableExtra("parcel_data");
+        System.out.println("HALLLLLLOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO" + movie.getTitle());
         if (movie == null) {
-            // Sandwich data unavailable
+            // Movie data unavailable
             closeOnError();
             return;
         }
@@ -83,6 +53,9 @@ public class DetailActivity extends AppCompatActivity {
 
         TextView releaseDateView = (TextView) findViewById(R.id.release_date_tv);
         releaseDateView.setText(movie.getReleaseDate());
+
+        TextView voteView = (TextView) findViewById(R.id.vote_tv);
+        voteView.setText(Double.toString(movie.getVoteAverage()));
 
         TextView plotView = (TextView) findViewById(R.id.plot_tv);
         plotView.setText(movie.getPlot());

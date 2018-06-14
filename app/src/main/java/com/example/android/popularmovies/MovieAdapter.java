@@ -61,8 +61,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         @Override
         public void onClick(View v) {
             int adapterPosition = getAdapterPosition();
-            Movie weatherForDay = mMovieData[adapterPosition];
-            mClickHandler.onClick(weatherForDay);
+            Movie singleMovie = mMovieData[adapterPosition];
+            mClickHandler.onClick(singleMovie);
         }
     }
 

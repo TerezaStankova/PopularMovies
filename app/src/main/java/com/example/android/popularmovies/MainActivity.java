@@ -11,6 +11,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -27,7 +29,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
     private static final String TAG = MainActivity.class.getSimpleName();
 
     private RecyclerView mRecyclerView;
-    private MovieAdapter mForecastAdapter;
+    private MovieAdapter mMovieAdapter;
 
     private TextView mErrorMessageDisplay;
 
@@ -38,71 +40,54 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        /*
-         * Using findViewById, we get a reference to our RecyclerView from xml. This allows us to
-         * do things like set the adapter of the RecyclerView and toggle the visibility.
-         */
-        mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_forecast);
 
+        mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_forecast);
         /* This TextView is used to display errors and will be hidden if there are no errors */
         mErrorMessageDisplay = (TextView) findViewById(R.id.tv_error_message_display);
 
         GridLayoutManager layoutManager = new GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false);
-
         mRecyclerView.setLayoutManager(layoutManager);
-
-        /*
-         * Use this setting to improve performance if you know that changes in content do not
-         * change the child layout size in the RecyclerView
-         */
         mRecyclerView.setHasFixedSize(true);
-
-
         /*
-         * The ForecastAdapter is responsible for linking our weather data with the Views that
-         * will end up displaying our weather data.
+         * The ForecastAdapter is responsible for linking our data with the Views that
+         * will end up displaying our data.
          */
-        mForecastAdapter = new MovieAdapter(this);
-
+        mMovieAdapter = new MovieAdapter(this);
         /* Setting the adapter attaches it to the RecyclerView in our layout. */
-        mRecyclerView.setAdapter(mForecastAdapter);
-
+        mRecyclerView.setAdapter(mMovieAdapter);
         /*
          * The ProgressBar that will indicate to the user that we are loading data. It will be
          * hidden when no data is loading.
          */
         mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator);
-
-        /* Once all of our views are setup, we can load the weather data. */
-        loadWeatherData();
+        /* Once all of our views are setup, we can load the data. */
+        loadMovieData();
     }
 
     /**
-     * This method will get the user's preferred location for weather, and then tell some
-     * background method to get the weather data in the background.
+     * This method will tell some background method to get the data in the background.
      */
-    private void loadWeatherData() {
-        showWeatherDataView();
-        new FetchWeatherTask().execute();
+    private void loadMovieData() {
+        showMovieDataView();
+        new FetchMovieTask().execute();
     }
 
     /**
      * This method is overridden by our MainActivity class in order to handle RecyclerView item
      * clicks.
      *
-     * @param weatherForDay The weather for the day that was clicked
+     * @param singleMovie The movie for the poster that was clicked
      */
     @Override
-    public void onClick(Movie weatherForDay) {
+    public void onClick(Movie singleMovie) {
         Context context = this;
+        Movie movie = new Movie();
+        movie = singleMovie;
         Class destinationClass = DetailActivity.class;
         Intent intentToStartDetailActivity = new Intent(context, destinationClass);
-        intentToStartDetailActivity.putExtra(Intent.EXTRA_TEXT, weatherForDay.getTitle());
+        intentToStartDetailActivity.putExtra("parcel_data", movie);
         startActivity(intentToStartDetailActivity);
     }
-
-
-
 
     /**
      * This method will make the View for the weather data visible and
@@ -111,10 +96,10 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
      * Since it is okay to redundantly set the visibility of a View, we don't
      * need to check whether each view is currently visible or invisible.
      */
-    private void showWeatherDataView() {
+    private void showMovieDataView() {
         /* First, make sure the error is invisible */
         mErrorMessageDisplay.setVisibility(View.INVISIBLE);
-        /* Then, make sure the weather data is visible */
+        /* Then, make sure the movie data is visible */
         mRecyclerView.setVisibility(View.VISIBLE);
     }
 
@@ -132,7 +117,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
         mErrorMessageDisplay.setVisibility(View.VISIBLE);
     }
 
-    public class FetchWeatherTask extends AsyncTask<String, Void, Movie[]> {
+    public class FetchMovieTask extends AsyncTask<String, Void, Movie[]> {
 
         @Override
         protected void onPreExecute() {
@@ -143,14 +128,14 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
         @Override
         protected Movie[] doInBackground(String... params) {
 
-           URL weatherRequestUrl = NetworkUtils.buildUrl();
+           URL movieRequestUrl = NetworkUtils.buildUrl();
 
             try {
-                String jsonWeatherResponse = NetworkUtils.getResponseFromHttpUrl(weatherRequestUrl);
+                String jsonMovieResponse = NetworkUtils.getResponseFromHttpUrl(movieRequestUrl);
 
-                Movie simpleJsonWeatherData[] = JSONUtils.getSimpleWeatherStringsFromJson(MainActivity.this, jsonWeatherResponse);
+                Movie simpleJsonMovieData[] = JSONUtils.getSimpleWeatherStringsFromJson(MainActivity.this, jsonMovieResponse);
 
-                return simpleJsonWeatherData;
+                return simpleJsonMovieData;
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -159,11 +144,11 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
         }
 
         @Override
-        protected void onPostExecute(Movie[] weatherData) {
+        protected void onPostExecute(Movie[] movieData) {
             mLoadingIndicator.setVisibility(View.INVISIBLE);
-            if (weatherData != null) {
-                showWeatherDataView();
-                mForecastAdapter.setMovieData(weatherData);
+            if (movieData != null) {
+                showMovieDataView();
+                mMovieAdapter.setMovieData(movieData);
             } else {
                 showErrorMessage();
             }
@@ -186,23 +171,23 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
         int id = item.getItemId();
 
         if (id == R.id.action_refresh) {
-           mForecastAdapter.setMovieData(null);
-           loadWeatherData();
+           mMovieAdapter.setMovieData(null);
+           loadMovieData();
            return true;
         }
 
         // Order by top rated when the top rated menu item is clicked
         if (id == R.id.top_rated) {
             NetworkUtils.changeBaseUrl("rating");
-            mForecastAdapter.setMovieData(null);
-            loadWeatherData();
+            mMovieAdapter.setMovieData(null);
+            loadMovieData();
             return true;
         }
 
         if (id == R.id.by_popularity) {
             NetworkUtils.changeBaseUrl("popular");
-            mForecastAdapter.setMovieData(null);
-            loadWeatherData();
+            mMovieAdapter.setMovieData(null);
+            loadMovieData();
             return true;
         }
 
