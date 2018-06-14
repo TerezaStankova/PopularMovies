@@ -17,10 +17,25 @@ public class DetailActivity extends AppCompatActivity {
     public static final String EXTRA_POSITION = "extra_position";
     private static final int DEFAULT_POSITION = -1;
 
+    private String mForecast;
+    private TextView mWeatherDisplay;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
+
+        mWeatherDisplay = (TextView) findViewById(R.id.title_tv);
+
+        Intent intentThatStartedThisActivity = getIntent();
+
+        if (intentThatStartedThisActivity != null) {
+            if (intentThatStartedThisActivity.hasExtra(Intent.EXTRA_TEXT)) {
+                mForecast = intentThatStartedThisActivity.getStringExtra(Intent.EXTRA_TEXT);
+                mWeatherDisplay.setText(mForecast);
+            }
+        }
 
         ImageView posterIv = findViewById(R.id.image_iv);
 

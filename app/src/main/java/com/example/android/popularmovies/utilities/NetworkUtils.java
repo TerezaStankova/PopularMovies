@@ -14,12 +14,17 @@ import java.util.Scanner;
 public class NetworkUtils {
     private static final String TAG = NetworkUtils.class.getSimpleName();
 
-    private static final String POPULAR_MOVIE_URL = "https://api.themoviedb.org/3/movie/top_rated";
+    private static final String TOP_RATED_MOVIE_URL = "https://api.themoviedb.org/3/movie/top_rated";
+    private static final String POPULAR_MOVIE_URL = "https://api.themoviedb.org/3/movie/popular";
     private static final String API_KEY = "api_key";
     private static final String api_key = "";
 
-    private static final String MOVIE_BASE_URL = POPULAR_MOVIE_URL;
+    private static String MOVIE_BASE_URL = POPULAR_MOVIE_URL;
 
+    public static void changeBaseUrl(String choice){
+        if (choice.equals("popular")) {MOVIE_BASE_URL = POPULAR_MOVIE_URL;}
+        else MOVIE_BASE_URL = TOP_RATED_MOVIE_URL;
+    }
 
     public static URL buildUrl() {
         Uri weatherQueryUri = Uri.parse(MOVIE_BASE_URL).buildUpon()

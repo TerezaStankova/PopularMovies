@@ -26,7 +26,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
      * The interface that receives onClick messages.
      */
     public interface MovieAdapterOnClickHandler {
-        void onClick(String weatherForDay);
+        void onClick(Movie weatherForDay);
     }
 
     /**
@@ -43,13 +43,13 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
      * Cache of the children views for a forecast list item.
      */
     public class MovieAdapterViewHolder extends RecyclerView.ViewHolder implements OnClickListener {
-        public final TextView mWeatherTextView;
-        //public final ImageView mPosterImageView;
+        /*public final TextView mWeatherTextView;*/
+        public final ImageView mPosterImageView;
 
         public MovieAdapterViewHolder(View view) {
             super(view);
-            mWeatherTextView = (TextView) view.findViewById(R.id.tv_weather_data);
-           // mPosterImageView = (ImageView) view.findViewById(R.id.tv_poster);
+            //mWeatherTextView = (TextView) view.findViewById(R.id.tv_weather_data);
+            mPosterImageView = (ImageView) view.findViewById(R.id.tv_poster);
             view.setOnClickListener(this);
         }
 
@@ -62,7 +62,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         public void onClick(View v) {
             int adapterPosition = getAdapterPosition();
             Movie weatherForDay = mMovieData[adapterPosition];
-            mClickHandler.onClick(weatherForDay.getTitle());
+            mClickHandler.onClick(weatherForDay);
         }
     }
 
@@ -101,15 +101,15 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     @Override
     public void onBindViewHolder(MovieAdapterViewHolder forecastAdapterViewHolder, int position) {
         Movie weatherForThisDay = mMovieData[position];
-        forecastAdapterViewHolder.mWeatherTextView.setText(weatherForThisDay.getTitle());
+        //forecastAdapterViewHolder.mWeatherTextView.setText(weatherForThisDay.getTitle());
 
-        /*
+
         Picasso.with(forecastAdapterViewHolder.itemView.getContext())
                 .load(weatherForThisDay.getPoster())
                 .placeholder(R.mipmap.ic_launcher)
                 .error(R.mipmap.ic_launcher)
                 .into(forecastAdapterViewHolder.mPosterImageView);
-*/
+
 
     }
 

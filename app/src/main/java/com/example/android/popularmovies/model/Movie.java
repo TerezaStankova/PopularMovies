@@ -1,6 +1,8 @@
 package com.example.android.popularmovies.model;
 
-public class Movie {
+import android.os.Parcelable;
+
+public class Movie{
     private String title;
     private String originalTitle;
     private String releaseDate;

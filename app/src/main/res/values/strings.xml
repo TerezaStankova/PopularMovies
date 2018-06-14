@@ -15,7 +15,8 @@
     <string name="error_message">Error occurred</string>
 
 
-    <string name="action_map">Map Location</string>
+    <string name="top_rated">Order by rating</string>
+    <string name="by_popularity">Order by popularity</string>
     <string name="action_share">Share</string>
 
     <!--Used in overflow menu to refresh weather data-->

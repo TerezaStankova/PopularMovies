@@ -9,9 +9,16 @@
         android:orderInCategory="1"
         android:title="@string/action_refresh"
         app:showAsAction="ifRoom"/>
-    <!--COMPLETED (1) Add a menu item to open the map-->
+
+    <!-- menu item to order the movies by top rated-->
     <item
-        android:id="@+id/action_map"
-        android:title="@string/action_map"
+        android:id="@+id/top_rated"
+        android:title="@string/top_rated"
+        app:showAsAction="never" />
+
+    <!-- menu item to order the movies by popularity-->
+    <item
+        android:id="@+id/by_popularity"
+        android:title="@string/by_popularity"
         app:showAsAction="never" />
 </menu>

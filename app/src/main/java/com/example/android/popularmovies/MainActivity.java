@@ -6,7 +6,6 @@ import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -48,7 +47,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
         /* This TextView is used to display errors and will be hidden if there are no errors */
         mErrorMessageDisplay = (TextView) findViewById(R.id.tv_error_message_display);
 
-        GridLayoutManager layoutManager = new GridLayoutManager(this, 3, GridLayoutManager.VERTICAL, false);
+        GridLayoutManager layoutManager = new GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false);
 
         mRecyclerView.setLayoutManager(layoutManager);
 
@@ -94,11 +93,11 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
      * @param weatherForDay The weather for the day that was clicked
      */
     @Override
-    public void onClick(String weatherForDay) {
+    public void onClick(Movie weatherForDay) {
         Context context = this;
         Class destinationClass = DetailActivity.class;
         Intent intentToStartDetailActivity = new Intent(context, destinationClass);
-        intentToStartDetailActivity.putExtra(Intent.EXTRA_TEXT, weatherForDay);
+        intentToStartDetailActivity.putExtra(Intent.EXTRA_TEXT, weatherForDay.getTitle());
         startActivity(intentToStartDetailActivity);
     }
 
@@ -187,15 +186,24 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
         int id = item.getItemId();
 
         if (id == R.id.action_refresh) {
-           //mForecastAdapter.setWeatherData(null);
-           //loadWeatherData();
-           //return true;
+           mForecastAdapter.setMovieData(null);
+           loadWeatherData();
+           return true;
         }
 
-        // COMPLETED (2) Launch the map when the map menu item is clicked
-        if (id == R.id.action_map) {
-           // openLocationInMap();
-            //return true;
+        // Order by top rated when the top rated menu item is clicked
+        if (id == R.id.top_rated) {
+            NetworkUtils.changeBaseUrl("rating");
+            mForecastAdapter.setMovieData(null);
+            loadWeatherData();
+            return true;
+        }
+
+        if (id == R.id.by_popularity) {
+            NetworkUtils.changeBaseUrl("popular");
+            mForecastAdapter.setMovieData(null);
+            loadWeatherData();
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
