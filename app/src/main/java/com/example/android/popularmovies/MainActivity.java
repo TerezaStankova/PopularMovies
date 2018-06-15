@@ -12,17 +12,25 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.android.popularmovies.utilities.JSONUtils;
 import com.example.android.popularmovies.utilities.NetworkUtils;
 import com.example.android.popularmovies.MovieAdapter.MovieAdapterOnClickHandler;
 import com.example.android.popularmovies.model.Movie;
 
-import java.net.URL;
+import android.widget.AdapterView.OnItemSelectedListener;
 
-public class MainActivity extends AppCompatActivity implements MovieAdapterOnClickHandler {
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+
+public class MainActivity extends AppCompatActivity implements MovieAdapterOnClickHandler, OnItemSelectedListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -31,12 +39,10 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
     private TextView mErrorMessageDisplay;
     private ProgressBar mLoadingIndicator;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_movies);
         /* This TextView is used to display errors and will be hidden if there are no errors */
@@ -157,7 +163,24 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
         /* Use the inflater's inflate method to inflate our menu layout to this menu */
         inflater.inflate(R.menu.order, menu);
         /* Return true so that the menu is displayed in the Toolbar */
-        return true;
+        MenuItem mSpinnerItem;
+        mSpinnerItem = menu.findItem( R.id.spinner );
+
+        View view = mSpinnerItem.getActionView();
+        if (view instanceof Spinner)
+        {
+            Spinner spinner = (Spinner) view;
+            spinner.setOnItemSelectedListener(this);
+
+            ArrayAdapter aa = ArrayAdapter.createFromResource( this,
+                    R.array.spinner_data,
+                    android.R.layout.simple_spinner_dropdown_item );
+            spinner.setAdapter(aa);
+        }
+
+
+
+       return true;
     }
 
     @Override
@@ -169,23 +192,32 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
            loadMovieData();
            return true;
         }
-
-        // Order by top rated when the top rated menu item is clicked
-        if (id == R.id.top_rated) {
-            NetworkUtils.changeBaseUrl("rating");
-            mMovieAdapter.setMovieData(null);
-            loadMovieData();
-            return true;
-        }
-
-        // Order by popularity when the top rated menu item is clicked
-        if (id == R.id.by_popularity) {
-            NetworkUtils.changeBaseUrl("popular");
-            mMovieAdapter.setMovieData(null);
-            loadMovieData();
-            return true;
-        }
-
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+        switch (position) {
+            case 0:
+                // Order by popularity when the popularity menu item is clicked
+                NetworkUtils.changeBaseUrl("popular");
+                mMovieAdapter.setMovieData(null);
+                loadMovieData();
+                break;
+            case 1:
+                // Order by top rated when the top rated menu item is clicked
+                NetworkUtils.changeBaseUrl("rating");
+                mMovieAdapter.setMovieData(null);
+                loadMovieData();
+                break;
+
+        }
+    }
+    public void onNothingSelected(AdapterView<?> arg0) {
+        // Order by popularity
+        NetworkUtils.changeBaseUrl("popular");
+        mMovieAdapter.setMovieData(null);
+        loadMovieData();
     }
 }

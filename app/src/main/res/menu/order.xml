@@ -10,15 +10,11 @@
         android:title="@string/action_refresh"
         app:showAsAction="ifRoom"/>
 
-    <!-- menu item to order the movies by top rated-->
-    <item
-        android:id="@+id/top_rated"
-        android:title="@string/top_rated"
-        app:showAsAction="never"/>
-
-    <!-- menu item to order the movies by popularity-->
-    <item
-        android:id="@+id/by_popularity"
-        android:title="@string/by_popularity"
-        app:showAsAction="never" />
+    <!-- spinner to order the movies by top rated/most popular-->
+      <item
+        android:id="@+id/spinner"
+        android:title="@string/actionbar_spinner"
+        app:actionViewClass="android.widget.Spinner"
+        android:background="@color/colorAccentDark"
+        app:showAsAction="always" />
 </menu>

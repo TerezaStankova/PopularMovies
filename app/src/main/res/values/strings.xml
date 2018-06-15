@@ -14,11 +14,12 @@
     <string name="detail_error_message">Movie data not available</string>
     <string name="error_message">Data not available. Check your Internet connection.</string>
 
-
-    <string name="top_rated">Order by rating</string>
-    <string name="by_popularity">Order by popularity</string>
-    <string name="action_share">Share</string>
+    <string-array name="spinner_data">
+        <item>Order by popularity</item>
+        <item>Order by rating</item>
+    </string-array>
 
     <!--Used in overflow menu to refresh weather data-->
     <string name="action_refresh">Refresh</string>
+    <string name="actionbar_spinner">Spinner to order movies</string>
 </resources>
