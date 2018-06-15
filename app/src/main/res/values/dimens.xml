@@ -2,4 +2,7 @@
 <resources>
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="poster_horizontal_margin">2dp</dimen>
+    <dimen name="poster_vertical_margin">2dp</dimen>
+    <integer name="gallery_columns">2</integer>
 </resources>

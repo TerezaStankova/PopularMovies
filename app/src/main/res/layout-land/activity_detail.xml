@@ -4,103 +4,91 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".DetailActivity">
+    tools:context=".DetailActivity"
+    android:padding="@dimen/activity_horizontal_margin">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:orientation="horizontal"
         android:layout_marginTop="@dimen/activity_vertical_margin"
         android:layout_marginBottom="@dimen/activity_vertical_margin"
         android:layout_marginLeft="@dimen/activity_horizontal_margin"
         android:layout_marginRight="@dimen/activity_horizontal_margin"
-        android:padding="@dimen/poster_horizontal_margin">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+        android:padding="@dimen/activity_horizontal_margin">
 
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_marginRight="@dimen/activity_horizontal_margin"
+                android:layout_weight="2"
                 android:orientation="vertical">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:text="@string/detail_original_title_label"
                     android:textColor="@color/colorAccentDark"
-                    android:textStyle="bold"
-                    android:layout_marginTop="@dimen/activity_vertical_margin"/>
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/original_title_tv"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/TextOnLight"/>
+                    android:textColor="@color/TextOnLight" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:text="@string/detail_release_date_label"
-                    android:textStyle="bold"
                     android:textColor="@color/colorAccentDark"
-                    android:layout_marginTop="@dimen/activity_vertical_margin"/>
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/release_date_tv"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/TextOnLight"/>
+                    android:textColor="@color/TextOnLight" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:text="@string/detail_vote_label"
-                    android:textStyle="bold"
                     android:textColor="@color/colorAccentDark"
-                    android:layout_marginTop="@dimen/activity_vertical_margin"/>
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/vote_tv"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/TextOnLight"/>
+                    android:textColor="@color/TextOnLight" />
 
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
+                    android:text="@string/detail_plot_label"
+                    android:textColor="@color/colorAccentDark"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/plot_tv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/TextOnLight" />
             </LinearLayout>
 
             <ImageView
                 android:id="@+id/image_iv"
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:adjustViewBounds="true"
+                android:minHeight="278dp"
+                android:minWidth="185dp"
+                android:layout_weight="1"
                 android:contentDescription="@string/movie_poster_content_description"
                 android:scaleType="centerCrop" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/detail_plot_label"
-                android:textStyle="bold"
-                android:textColor="@color/colorAccentDark"
-                android:layout_marginTop="@dimen/activity_vertical_margin"/>
-
-            <TextView
-                android:id="@+id/plot_tv"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/TextOnLight"/>
-
-        </LinearLayout>
     </LinearLayout>
-
-</ScrollView>
+ </ScrollView>

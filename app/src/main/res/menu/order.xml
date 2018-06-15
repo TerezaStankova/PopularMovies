@@ -14,7 +14,7 @@
     <item
         android:id="@+id/top_rated"
         android:title="@string/top_rated"
-        app:showAsAction="never" />
+        app:showAsAction="never"/>
 
     <!-- menu item to order the movies by popularity-->
     <item

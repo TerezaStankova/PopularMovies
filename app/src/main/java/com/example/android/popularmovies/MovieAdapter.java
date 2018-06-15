@@ -2,7 +2,6 @@ package com.example.android.popularmovies;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -30,8 +29,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     }
 
     /**
-     * Creates a ForecastAdapter.
-     *
      * @param clickHandler The on-click handler for this adapter. This single handler is called
      *                     when an item is clicked.
      */
@@ -40,15 +37,15 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     }
 
     /**
-     * Cache of the children views for a forecast list item.
+     * Cache of the children views for a movie list item.
      */
     public class MovieAdapterViewHolder extends RecyclerView.ViewHolder implements OnClickListener {
-        /*public final TextView mWeatherTextView;*/
+        public final TextView mMovieTextView;
         public final ImageView mPosterImageView;
 
         public MovieAdapterViewHolder(View view) {
             super(view);
-            //mWeatherTextView = (TextView) view.findViewById(R.id.tv_weather_data);
+            mMovieTextView = (TextView) view.findViewById(R.id.tv_movie_title);
             mPosterImageView = (ImageView) view.findViewById(R.id.tv_poster);
             view.setOnClickListener(this);
         }
@@ -71,10 +68,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
      * is laid out. Enough ViewHolders will be created to fill the screen and allow for scrolling.
      *
      * @param viewGroup The ViewGroup that these ViewHolders are contained within.
-     * @param viewType  If your RecyclerView has more than one type of item (which ours doesn't) you
-     *                  can use this viewType integer to provide a different layout. See
-     *                  {@link android.support.v7.widget.RecyclerView.Adapter#getItemViewType(int)}
-     *                  for more details.
      * @return A new ForecastAdapterViewHolder that holds the View for each list item
      */
     @Override
@@ -90,25 +83,25 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
 
     /**
      * OnBindViewHolder is called by the RecyclerView to display the data at the specified
-     * position. In this method, we update the contents of the ViewHolder to display the weather
+     * position. In this method, we update the contents of the ViewHolder to display the movie
      * details for this particular position, using the "position" argument that is conveniently
      * passed into us.
      *
-     * @param forecastAdapterViewHolder The ViewHolder which should be updated to represent the
+     * @param movieAdapterViewHolder The ViewHolder which should be updated to represent the
      *                                  contents of the item at the given position in the data set.
      * @param position                  The position of the item within the adapter's data set.
      */
     @Override
-    public void onBindViewHolder(MovieAdapterViewHolder forecastAdapterViewHolder, int position) {
-        Movie weatherForThisDay = mMovieData[position];
-        //forecastAdapterViewHolder.mWeatherTextView.setText(weatherForThisDay.getTitle());
+    public void onBindViewHolder(MovieAdapterViewHolder movieAdapterViewHolder, int position) {
+        Movie singleMovie = mMovieData[position];
+        movieAdapterViewHolder.mMovieTextView.setText(singleMovie.getTitle());
 
 
-        Picasso.with(forecastAdapterViewHolder.itemView.getContext())
-                .load(weatherForThisDay.getPoster())
+        Picasso.with(movieAdapterViewHolder.itemView.getContext())
+                .load(singleMovie.getPoster())
                 .placeholder(R.mipmap.ic_launcher)
                 .error(R.mipmap.ic_launcher)
-                .into(forecastAdapterViewHolder.mPosterImageView);
+                .into(movieAdapterViewHolder.mPosterImageView);
 
 
     }

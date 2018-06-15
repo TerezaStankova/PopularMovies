@@ -12,7 +12,7 @@
 
     <!-- Error messages-->
     <string name="detail_error_message">Movie data not available</string>
-    <string name="error_message">Error occurred</string>
+    <string name="error_message">Data not available. Check your Internet connection.</string>
 
 
     <string name="top_rated">Order by rating</string>
@@ -21,7 +21,4 @@
 
     <!--Used in overflow menu to refresh weather data-->
     <string name="action_refresh">Refresh</string>
-
-
-
 </resources>

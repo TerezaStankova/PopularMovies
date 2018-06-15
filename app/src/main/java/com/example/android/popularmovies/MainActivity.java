@@ -11,8 +11,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.os.Parcel;
-import android.os.Parcelable;
 
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -30,10 +28,9 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
 
     private RecyclerView mRecyclerView;
     private MovieAdapter mMovieAdapter;
-
     private TextView mErrorMessageDisplay;
-
     private ProgressBar mLoadingIndicator;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,11 +38,14 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
         setContentView(R.layout.activity_main);
 
 
-        mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_forecast);
+        mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_movies);
         /* This TextView is used to display errors and will be hidden if there are no errors */
         mErrorMessageDisplay = (TextView) findViewById(R.id.tv_error_message_display);
 
-        GridLayoutManager layoutManager = new GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false);
+        final int columns = getResources().getInteger(R.integer.gallery_columns);
+
+        GridLayoutManager layoutManager = new GridLayoutManager(this, columns, GridLayoutManager.VERTICAL, false);
+
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setHasFixedSize(true);
         /*
@@ -90,11 +90,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
     }
 
     /**
-     * This method will make the View for the weather data visible and
-     * hide the error message.
-     * <p>
-     * Since it is okay to redundantly set the visibility of a View, we don't
-     * need to check whether each view is currently visible or invisible.
+     * This method will make the View for the movie data visible and
+     * hide the error message
      */
     private void showMovieDataView() {
         /* First, make sure the error is invisible */
@@ -104,11 +101,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
     }
 
     /**
-     * This method will make the error message visible and hide the weather
+     * This method will make the error message visible and hide the movie
      * View.
-     * <p>
-     * Since it is okay to redundantly set the visibility of a View, we don't
-     * need to check whether each view is currently visible or invisible.
      */
     private void showErrorMessage() {
         /* First, hide the currently visible data */
@@ -184,6 +178,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
             return true;
         }
 
+        // Order by popularity when the top rated menu item is clicked
         if (id == R.id.by_popularity) {
             NetworkUtils.changeBaseUrl("popular");
             mMovieAdapter.setMovieData(null);
