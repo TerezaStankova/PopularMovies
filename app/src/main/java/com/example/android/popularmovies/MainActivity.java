@@ -17,7 +17,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.android.popularmovies.utilities.JSONUtils;
 import com.example.android.popularmovies.utilities.NetworkUtils;
@@ -27,12 +26,8 @@ import com.example.android.popularmovies.model.Movie;
 import android.widget.AdapterView.OnItemSelectedListener;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements MovieAdapterOnClickHandler, OnItemSelectedListener {
-
-    private static final String TAG = MainActivity.class.getSimpleName();
 
     private RecyclerView mRecyclerView;
     private MovieAdapter mMovieAdapter;
@@ -87,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
     @Override
     public void onClick(Movie singleMovie) {
         Context context = this;
-        Movie movie = new Movie();
+        Movie movie;
         movie = singleMovie;
         Class destinationClass = DetailActivity.class;
         Intent intentToStartDetailActivity = new Intent(context, destinationClass);
@@ -133,9 +128,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
             try {
                 String jsonMovieResponse = NetworkUtils.getResponseFromHttpUrl(movieRequestUrl);
 
-                Movie simpleJsonMovieData[] = JSONUtils.getSimpleWeatherStringsFromJson(MainActivity.this, jsonMovieResponse);
-
-                return simpleJsonMovieData;
+                return JSONUtils.getMovieDataFromJson(MainActivity.this, jsonMovieResponse);
 
             } catch (Exception e) {
                 e.printStackTrace();

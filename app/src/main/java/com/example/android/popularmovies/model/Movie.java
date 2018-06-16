@@ -31,47 +31,21 @@ public class Movie implements Parcelable{
     public String getTitle() {
         return title;
     }
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-
     public String getOriginalTitle() {
         return originalTitle;
     }
-    public void setOriginalTitle(String originalTitle) {
-        this.originalTitle = originalTitle;
-    }
-
-
     public String getReleaseDate() {
         return releaseDate;
     }
-    public void setReleaseDate(String releaseDate) {
-        this.releaseDate = releaseDate;
-    }
-
-
     public String getVoteAverage() {
         return Double.toString(voteAverage);
     }
-    public void setVoteAverage(double voteAverage) {
-        this.voteAverage = voteAverage;
-    }
-
-
     public String getPoster() {
         return poster;
     }
-    public void setPoster(String poster) {
-        this.poster = poster;
-    }
-
-
     public String getPlot() {
         return plot;
     }
-    public void setPlot(String plot) {this.plot = plot;}
 
     private Movie(Parcel in){
         title = in.readString();

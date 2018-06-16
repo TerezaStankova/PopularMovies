@@ -10,7 +10,7 @@ import com.example.android.popularmovies.model.Movie;
 public class JSONUtils {
 
     //Parse data from Json for posters
-    public static Movie[] getSimpleWeatherStringsFromJson(Context context, String movieJsonStr)
+    public static Movie[] getMovieDataFromJson(Context context, String movieJsonStr)
             throws JSONException {
 
         /* Movie information. Each movie's info is an element of the "results" array */
