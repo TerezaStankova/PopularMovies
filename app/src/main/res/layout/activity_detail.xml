@@ -100,7 +100,29 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/TextOnLight"/>
 
+            <TextView
+                android:id="@+id/tv_error_message_display"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:text="@string/error_message"
+                android:textSize="20sp"
+                android:visibility="invisible" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/trailers_label"
+                android:textStyle="bold"
+                android:textColor="@color/colorAccentDark"
+                android:layout_marginTop="@dimen/activity_vertical_margin"/>
+
+            <TextView
+                android:id="@+id/key_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/TextOnLight"/>
+
         </LinearLayout>
     </LinearLayout>
-
 </ScrollView>

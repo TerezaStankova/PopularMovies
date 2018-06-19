@@ -2,6 +2,8 @@ package com.example.android.popularmovies;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -33,6 +35,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
     private MovieAdapter mMovieAdapter;
     private TextView mErrorMessageDisplay;
     private ProgressBar mLoadingIndicator;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,8 +72,27 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
      * This method will tell some background method to get the data in the background.
      */
     private void loadMovieData() {
-        showMovieDataView();
-        new FetchMovieTask().execute();
+        if (isConnected() == true) {
+            showMovieDataView();
+            new FetchMovieTask().execute();
+        }
+        else {
+            showErrorMessage();
+        }
+    }
+
+    /**Check for internet connection before making the actual request to the API,
+     * so the device can save one unneeded network call given that we know it will
+     * fail to fetch the movies.
+     */
+
+    public boolean isConnected() {
+        ConnectivityManager cm = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        if (activeNetwork != null && activeNetwork.isConnectedOrConnecting()) {
+            return true;
+        }
+        return false;
     }
 
     /**

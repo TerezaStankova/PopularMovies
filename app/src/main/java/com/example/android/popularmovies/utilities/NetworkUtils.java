@@ -10,15 +10,21 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Scanner;
 
+import com.example.android.popularmovies.model.Movie;
+
 public class NetworkUtils {
     private static final String TAG = NetworkUtils.class.getSimpleName();
 
     private static final String TOP_RATED_MOVIE_URL = "https://api.themoviedb.org/3/movie/top_rated";
     private static final String POPULAR_MOVIE_URL = "https://api.themoviedb.org/3/movie/popular";
     private static final String API_KEY = "api_key";
-    private static final String api_key = "INSERT_YOUR_KEY";
+    private static final String api_key = "ENTER_YOUR_API_KEY         ";
 
     private static String MOVIE_BASE_URL = POPULAR_MOVIE_URL;
+
+    private static final String BASIC_MOVIE_URL = "https://api.themoviedb.org/3/movie/";
+    private static final String VIDEO_MOVIE_URL_END = "/videos";
+    private static final String REVIEW_MOVIE_URL_END = "/reviews";
 
     public static void changeBaseUrl(String choice){
         if (choice.equals("popular")) {MOVIE_BASE_URL = POPULAR_MOVIE_URL;}
@@ -26,12 +32,12 @@ public class NetworkUtils {
     }
 
     public static URL buildUrl() {
-        Uri weatherQueryUri = Uri.parse(MOVIE_BASE_URL).buildUpon()
+        Uri movieQueryUri = Uri.parse(MOVIE_BASE_URL).buildUpon()
                 .appendQueryParameter(API_KEY, api_key)
                 .build();
 
         try {
-            URL movieQueryURL = new URL(weatherQueryUri.toString());
+            URL movieQueryURL = new URL(movieQueryUri.toString());
             Log.v(TAG, "URL: " + movieQueryURL);
             return movieQueryURL;
         } catch (MalformedURLException e) {
@@ -40,6 +46,35 @@ public class NetworkUtils {
         }
     }
 
+    public static URL buildVideoUrl(Movie movie) {
+        Uri videoQueryUri = Uri.parse(BASIC_MOVIE_URL + movie.getId() + VIDEO_MOVIE_URL_END).buildUpon()
+                .appendQueryParameter(API_KEY, api_key)
+                .build();
+
+        try {
+            URL movieQueryURL = new URL(videoQueryUri.toString());
+            Log.v(TAG, "URL: " + movieQueryURL);
+            return movieQueryURL;
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static URL buildReviewUrl(Movie movie) {
+        Uri reviewQueryUri = Uri.parse(BASIC_MOVIE_URL + movie.getId() + REVIEW_MOVIE_URL_END).buildUpon()
+                .appendQueryParameter(API_KEY, api_key)
+                .build();
+
+        try {
+            URL movieQueryURL = new URL(reviewQueryUri.toString());
+            Log.v(TAG, "URL: " + movieQueryURL);
+            return movieQueryURL;
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
     /**
      * This method returns the entire result from the HTTP response.
      *
