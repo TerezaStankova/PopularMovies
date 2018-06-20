@@ -6,6 +6,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.example.android.popularmovies.model.Movie;
+import com.example.android.popularmovies.model.Review;
 import com.example.android.popularmovies.model.Trailer;
 
 public class JSONUtils {
@@ -90,16 +91,54 @@ public class JSONUtils {
             JSONObject trailerInfo = trailerArray.getJSONObject(i);
             type = trailerInfo.getString(OWM_TYPE);
 
-            if (type.equals("Trailer")){
-                name = trailerInfo.getString(OWN_NAME);
-                key = trailerInfo.getString(OWM_KEY);
-                whole_key =  "https://wwww.youtube.com/watch?v=" + key;
-                parsedTrailerData[a] = new Trailer(name, whole_key);
-                a++;
-            }
+            name = trailerInfo.getString(OWN_NAME);
+            key = trailerInfo.getString(OWM_KEY);
+            whole_key =  "https://m.youtube.com/watch?v=" + key;
+            parsedTrailerData[i] = new Trailer(name, whole_key);
+
+           // if (type.equals("Trailer")){
+           //     name = trailerInfo.getString(OWN_NAME);
+           //     key = trailerInfo.getString(OWM_KEY);
+           //     whole_key =  "https://wwww.youtube.com/watch?v=" + key;
+           //     parsedTrailerData[a] = new Trailer(name, whole_key);
+           //     a++;
+          //  }
 
         }
 
         return parsedTrailerData;
+    }
+
+    //Parse data from Json for reviews
+    public static Review[] getReviewDataFromJson(Context context, String reviewJsonStr)
+            throws JSONException {
+
+        /* Review information. Each review's info is an element of the "results" array */
+        final String OWM_RESULTS = "results";
+        final String OWN_AUTHOR = "author";
+        final String OWM_CONTENT = "content";
+
+        /* Review array to hold each review's info */
+        Review[] parsedReviewData = null;
+
+        JSONObject reviewJson = new JSONObject(reviewJsonStr);
+        JSONArray reviewArray = reviewJson.getJSONArray(OWM_RESULTS);
+
+        parsedReviewData = new Review[reviewArray.length()];
+
+        for (int i = 0; i < reviewArray.length(); i++) {
+            String author;
+            String content;
+
+            /* Get the JSON object representing the review */
+            JSONObject trailerInfo = reviewArray.getJSONObject(i);
+
+            author = trailerInfo.getString(OWN_AUTHOR);
+            content = trailerInfo.getString(OWM_CONTENT);
+            parsedReviewData[i] = new Review(author, content);
+
+        }
+
+        return parsedReviewData;
     }
 }

@@ -18,7 +18,7 @@ public class NetworkUtils {
     private static final String TOP_RATED_MOVIE_URL = "https://api.themoviedb.org/3/movie/top_rated";
     private static final String POPULAR_MOVIE_URL = "https://api.themoviedb.org/3/movie/popular";
     private static final String API_KEY = "api_key";
-    private static final String api_key = "ENTER_YOUR_API_KEY         ";
+    private static final String api_key = "";
 
     private static String MOVIE_BASE_URL = POPULAR_MOVIE_URL;
 
@@ -46,8 +46,8 @@ public class NetworkUtils {
         }
     }
 
-    public static URL buildVideoUrl(Movie movie) {
-        Uri videoQueryUri = Uri.parse(BASIC_MOVIE_URL + movie.getId() + VIDEO_MOVIE_URL_END).buildUpon()
+    public static URL buildVideoUrl(int id) {
+        Uri videoQueryUri = Uri.parse(BASIC_MOVIE_URL + id + VIDEO_MOVIE_URL_END).buildUpon()
                 .appendQueryParameter(API_KEY, api_key)
                 .build();
 
@@ -61,8 +61,8 @@ public class NetworkUtils {
         }
     }
 
-    public static URL buildReviewUrl(Movie movie) {
-        Uri reviewQueryUri = Uri.parse(BASIC_MOVIE_URL + movie.getId() + REVIEW_MOVIE_URL_END).buildUpon()
+    public static URL buildReviewUrl(int id) {
+        Uri reviewQueryUri = Uri.parse(BASIC_MOVIE_URL + id + REVIEW_MOVIE_URL_END).buildUpon()
                 .appendQueryParameter(API_KEY, api_key)
                 .build();
 
