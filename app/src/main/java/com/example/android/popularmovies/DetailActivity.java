@@ -1,6 +1,7 @@
 package com.example.android.popularmovies;
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
@@ -12,10 +13,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.android.popularmovies.database.AppDatabase;
+import com.example.android.popularmovies.database.MovieEntry;
 import com.example.android.popularmovies.model.Review;
 import com.example.android.popularmovies.model.Trailer;
 import com.example.android.popularmovies.utilities.JSONUtils;
@@ -26,15 +32,43 @@ import com.example.android.popularmovies.TrailerAdapter.TrailerAdapterOnClickHan
 import com.example.android.popularmovies.ReviewAdapter.ReviewAdapterOnClickHandler;
 
 import java.net.URL;
+import java.util.Date;
 
 public class DetailActivity extends AppCompatActivity implements TrailerAdapterOnClickHandler, ReviewAdapterOnClickHandler {
 
+    private static final String TAG = DetailActivity.class.getSimpleName();
+
+    // Fields for views
     private RecyclerView mTrailerRecyclerView;
     private RecyclerView mReviewRecyclerView;
     private TrailerAdapter mTrailerAdapter;
     private ReviewAdapter mReviewAdapter;
     private TextView mErrorMessageDisplay;
+    Button mButton;
+
     private int id;
+    private String title;
+    private String originalTitle;
+    private String releaseDate;
+    private String voteAverage;
+    private String poster;
+    private String plot;
+
+    // Extra for the task ID to be received in the intent
+    public static final String EXTRA_TASK_ID = "extraTaskId";
+    // Extra for the task ID to be received after rotation
+    public static final String INSTANCE_TASK_ID = "instanceTaskId";
+    // Constants for favorite
+    public static final int FAVAROTE = 1;
+    public static final int UNFAVORITE = 2;
+    // Constant for default task id to be used when not in update mode
+    private static final int DEFAULT_TASK_ID = -1;
+
+
+    // Member variable for the Database
+    private AppDatabase mDb;
+
+    private int mMovieId = DEFAULT_TASK_ID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +76,13 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapterO
         setContentView(R.layout.activity_detail);
 
         ImageView posterIv = findViewById(R.id.image_iv);
-
+        mButton = findViewById(R.id.saveButton);
+        mButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onSaveButtonClicked();
+            }
+        });
 
 
         Movie movie = (Movie) getIntent().getParcelableExtra("parcel_data");
@@ -53,13 +93,20 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapterO
             return;
         }
 
-        id = movie.getId();
+           id = movie.getId();
+           originalTitle = movie.getOriginalTitle();
+           releaseDate = movie.getReleaseDate();
+           voteAverage = movie.getVoteAverage();
+           poster = movie.getPoster();
+           plot = movie.getPlot();
+           title = movie.getTitle();
+
         populateUI(movie);
         Picasso.with(this)
                 .load(movie.getPoster())
                 .into(posterIv);
 
-        setTitle(movie.getTitle());
+        setTitle(title);
 
         mErrorMessageDisplay = (TextView) findViewById(R.id.tv_error_message_display_detail);
         mTrailerRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_trailers);
@@ -293,5 +340,25 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapterO
             }
         }
     }
+
+    public void onSaveButtonClicked() {
+        final MovieEntry movieEntry = new MovieEntry(id,  title, originalTitle, releaseDate, voteAverage, poster, plot);
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                if (mMovieId == DEFAULT_TASK_ID) {
+                    // insert new task
+                    mDb.movieDao().insertTask(movieEntry);
+                } else {
+                    //update task
+                    movieEntry.setId(mMovieId);
+                    mDb.movieDao().updateTask(movieEntry);
+                }
+                finish();
+            }
+        });
+    }
+
+
 
 }
