@@ -17,6 +17,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -57,7 +58,7 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapterO
     private ReviewAdapter mReviewAdapter;
     private TextView mErrorMessageDisplay;
     Button mButton;
-    private int buttonColor;
+    private String favouriteTitle;
 
     private int id;
     private String title;
@@ -82,12 +83,7 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapterO
 
 
         mButton = findViewById(R.id.saveButton);
-        mButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onSaveButtonClicked();
-            }
-        });
+
 
         Movie movie = (Movie) getIntent().getParcelableExtra("parcel_data");
 
@@ -114,16 +110,32 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapterO
                 = ViewModelProviders.of(this, factory).get(DetailActivityViewModel.class);
 
 
-        String favouriteTitle;
-        try{favouriteTitle= viewModel.getFavouriteTitle((Integer) id);}
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                favouriteTitle = mDb.movieDao().titleById(id);
+                Log.d("favourite Title", "tryFSucc" + favouriteTitle);
+                if (favouriteTitle == null) {
+                    isFavourite = false;
+                } else {
+                    isFavourite = true;
+                }
+            }
+        });
+
+       /*
+        try{
+        favouriteTitle= viewModel.getFavouriteTitle(id);
+
+        }
         catch (Exception e){
             favouriteTitle = null;
-        }
-        if (favouriteTitle == null) {
-            isFavourite = false;
-        } else {
-            isFavourite = true;
-        }
+            Log.d("favourite Title","tryFail" +  favouriteTitle);
+                    }*/
+
+
+
+        Log.d("Is FAVOURITE?????","IS IT??" + isFavourite);
 
         populateUI(movie);
         Picasso.with(this)
@@ -131,11 +143,6 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapterO
                 .into(posterIv);
 
         setTitle(title);
-
-        if (isFavourite == true){
-            buttonColor = R.color.colorAccentDark;
-            mButton.setBackgroundColor(buttonColor);
-            mButton.setText("MY COLLECTION");}
 
         mErrorMessageDisplay = (TextView) findViewById(R.id.tv_error_message_display_detail);
         mTrailerRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_trailers);
@@ -170,6 +177,13 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapterO
         /* Setting the adapter attaches it to the RecyclerView in our layout. */
         mReviewRecyclerView.setAdapter(mReviewAdapter);
         loadReviewData();
+
+        mButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onSaveButtonClicked();
+            }
+        });
     }
 
     public final int getIdFromDetail(){
@@ -228,6 +242,10 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapterO
         TextView plotView = (TextView) findViewById(R.id.plot_tv);
         plotView.setText(movie.getPlot());
 
+        if (isFavourite == true){
+            mButton.setText("MY FAVOURITE MOVIE");}
+            else {mButton.setText("NEW FAVOURITE?");
+        }
     }
 
     /**
@@ -367,10 +385,10 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapterO
                 public void run() {
                         // insert new task
                         mDb.movieDao().insertTask(movieEntry);
+                    Log.d("set task", "set task TITLEENTERED?" + mDb.movieDao().titleById(id));
                 }
             });
             mButton.setText("MY FAVOURITE MOVIE");
-
             isFavourite = true;
         }
         else {
@@ -379,8 +397,10 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapterO
                 @Override
                 public void run() {
                     mDb.movieDao().deleteById(id);
+                    Log.d("delete task","set task TITLEENTERED?" + mDb.movieDao().titleById(id));
                 }
             });
+
             mButton.setText("NEW FAVOURITE?");
             isFavourite = false;
         }

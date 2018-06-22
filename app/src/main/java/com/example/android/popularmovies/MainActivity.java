@@ -1,14 +1,18 @@
 package com.example.android.popularmovies;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -20,6 +24,8 @@ import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.example.android.popularmovies.database.AppDatabase;
+import com.example.android.popularmovies.database.MovieEntry;
 import com.example.android.popularmovies.utilities.JSONUtils;
 import com.example.android.popularmovies.utilities.NetworkUtils;
 import com.example.android.popularmovies.MovieAdapter.MovieAdapterOnClickHandler;
@@ -28,6 +34,7 @@ import com.example.android.popularmovies.model.Movie;
 import android.widget.AdapterView.OnItemSelectedListener;
 
 import java.net.URL;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements MovieAdapterOnClickHandler, OnItemSelectedListener {
 
@@ -36,6 +43,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
     private TextView mErrorMessageDisplay;
     private ProgressBar mLoadingIndicator;
 
+    private AppDatabase mDb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +74,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
         mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator);
         /* Once all of our views are setup, we can load the data. */
         loadMovieData();
+        mDb = AppDatabase.getInstance(getApplicationContext());
     }
 
     /**
@@ -170,6 +179,54 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
         }
     }
 
+    /*
+    public class FetchFavouriteMovieTask extends AsyncTask<String, Void, Movie[]> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            mLoadingIndicator.setVisibility(View.VISIBLE);
+        }
+
+
+        @Override
+        protected Movie[] doInBackground(String... params) {
+
+            try {
+                List<MovieEntry> tasks = mMovieAdapter.setFavouriteMovies();
+                Movie moviesDatabase = (Movie) tasks;
+
+                return moviesDatabase;
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+
+
+        @Override
+        protected void onPostExecute(Movie[] movieData) {
+            mLoadingIndicator.setVisibility(View.INVISIBLE);
+            if (movieData != null) {
+                showMovieDataView();
+                mMovieAdapter.setMovieData(movieData);
+            } else {
+                showErrorMessage();
+            }
+        }
+    }*/
+
+    private void setupViewModel() {
+        MainViewModel viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
+        viewModel.getTasks().observe(this, new Observer<List<MovieEntry>>() {
+            @Override
+            public void onChanged(@Nullable List<MovieEntry> taskEntries) {
+                Log.d("message", "Updating list of tasks from LiveData in ViewModel");
+                mMovieAdapter.setFavouriteMovies(taskEntries);
+            }
+        });
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -230,6 +287,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
             case 2:
                 //List favourite movies
                 mMovieAdapter.setMovieData(null);
+                showMovieDataView();
+                setupViewModel();
                 break;
         }
     }

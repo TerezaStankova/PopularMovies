@@ -11,6 +11,7 @@ public class MovieRepository {
 
     private MovieDao mWordDao;
     private LiveData<List<MovieEntry>> mAllWords;
+    private String title;
 
     // Note that in order to unit test the WordRepository, you have to remove the Application
     // dependency. This adds complexity and much more code, and this sample is not about testing.
@@ -55,10 +56,10 @@ public class MovieRepository {
     // thread, blocking the UI.
     public String getTitle (Integer id) {
         new getTitleAsyncTask(mWordDao).execute(id);
-        return null;
+        return title;
     }
 
-    private static class getTitleAsyncTask extends AsyncTask<Integer, Void, String> {
+    private class getTitleAsyncTask extends AsyncTask<Integer, Void, String> {
 
         private MovieDao mAsyncTaskDao;
 
@@ -68,7 +69,7 @@ public class MovieRepository {
 
         @Override
         protected String doInBackground(final Integer... params) {
-            String title = mAsyncTaskDao.titleById(params[0]);
+            title = mAsyncTaskDao.titleById(params[0]);
             return title;
         }
     }

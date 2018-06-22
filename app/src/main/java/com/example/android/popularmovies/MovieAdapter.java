@@ -8,8 +8,14 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.example.android.popularmovies.database.MovieEntry;
 import com.example.android.popularmovies.model.Movie;
 import com.squareup.picasso.Picasso;
+
+import org.json.JSONObject;
+
+import java.util.List;
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHolder> {
 
@@ -87,8 +93,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
      * passed into us.
      *
      * @param movieAdapterViewHolder The ViewHolder which should be updated to represent the
-     *                                  contents of the item at the given position in the data set.
-     * @param position                  The position of the item within the adapter's data set.
+     *                               contents of the item at the given position in the data set.
+     * @param position               The position of the item within the adapter's data set.
      */
     @Override
     public void onBindViewHolder(MovieAdapterViewHolder movieAdapterViewHolder, int position) {
@@ -118,9 +124,42 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     }
 
 
-
     public void setMovieData(Movie[] movieData) {
         mMovieData = movieData;
         notifyDataSetChanged();
     }
+
+    public void setFavouriteMovies(List<MovieEntry> movieEntries) {
+
+        if (movieEntries != null) {
+            MovieEntry[] mMovieEntry = new MovieEntry[movieEntries.size()];
+            Movie[] mMovieDatabase = new Movie[mMovieEntry.length];
+
+            for (int i = 0; i < movieEntries.size(); i++) {
+                mMovieEntry[i] = movieEntries.get(i);
+                System.out.println("mMovieEntry" + i + mMovieEntry[i]);
+            }
+
+            for (int i = 0; i < mMovieEntry.length; i++) {
+
+
+
+                String title = mMovieEntry[i].getTitle();
+                String originalTitle = mMovieEntry[i].getOriginalTitle();
+                double voteAverage = Double.valueOf((mMovieEntry[i].getVoteAverage()));
+
+                String releaseDate = mMovieEntry[i].getReleaseDate();
+                String plot = mMovieEntry[i].getPlot();
+                String poster = mMovieEntry[i].getPoster();
+                int id = mMovieEntry[i].getId();
+
+                System.out.println("mMovieEntry" + i + title + originalTitle+ releaseDate + voteAverage + poster + plot + id);
+
+                mMovieDatabase[i] = new Movie(title, originalTitle, releaseDate, voteAverage, poster, plot, id);
+            }
+            setMovieData(mMovieDatabase);
+        }
+    }
+
 }
+
