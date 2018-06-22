@@ -227,6 +227,10 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
                 loadMovieData();
                 break;
 
+            case 2:
+                //List favourite movies
+                mMovieAdapter.setMovieData(null);
+                break;
         }
     }
     public void onNothingSelected(AdapterView<?> arg0) {

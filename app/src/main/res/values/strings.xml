@@ -17,6 +17,7 @@
     <string-array name="spinner_data">
         <item>Order by popularity</item>
         <item>Order by rating</item>
+        <item>Show my collection</item>
     </string-array>
 
     <!--Used in overflow menu to refresh weather data-->

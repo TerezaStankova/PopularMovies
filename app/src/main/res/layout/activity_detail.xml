@@ -69,6 +69,13 @@
                     android:layout_height="wrap_content"
                     android:textColor="@color/TextOnLight"/>
 
+                <Button
+                    android:id="@+id/saveButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="81dp"
+                    android:drawableBottom="@android:drawable/star_big_on"
+                    android:text="Favourite" />
+
             </LinearLayout>
 
             <ImageView
@@ -86,14 +93,6 @@
             android:layout_height="wrap_content"
             android:gravity="center_vertical|center_horizontal"
             android:orientation="vertical">
-
-            <Button
-                android:id="@+id/saveButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:drawableBottom="@android:drawable/btn_star_big_off"
-                android:gravity="left"
-                android:text="Button" />
 
             <TextView
                 android:layout_width="match_parent"

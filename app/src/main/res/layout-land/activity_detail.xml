@@ -84,6 +84,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="@color/TextOnLight" />
+
+                <Button
+                    android:id="@+id/saveButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="81dp"
+                    android:drawableBottom="@android:drawable/star_big_on"
+                    android:text="Favourite" />
+
             </LinearLayout>
 
             <ImageView

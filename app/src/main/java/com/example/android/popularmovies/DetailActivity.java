@@ -1,14 +1,19 @@
 package com.example.android.popularmovies;
 
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,6 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.popularmovies.database.AppDatabase;
+import com.example.android.popularmovies.database.MovieDao;
 import com.example.android.popularmovies.database.MovieEntry;
 import com.example.android.popularmovies.model.Review;
 import com.example.android.popularmovies.model.Trailer;
@@ -33,10 +39,16 @@ import com.example.android.popularmovies.ReviewAdapter.ReviewAdapterOnClickHandl
 
 import java.net.URL;
 import java.util.Date;
+import java.util.List;
+
+import static com.example.android.popularmovies.R.color.colorAccentDark;
+import static com.example.android.popularmovies.R.color.colorPrimaryLight;
 
 public class DetailActivity extends AppCompatActivity implements TrailerAdapterOnClickHandler, ReviewAdapterOnClickHandler {
 
     private static final String TAG = DetailActivity.class.getSimpleName();
+
+    boolean isFavourite;
 
     // Fields for views
     private RecyclerView mTrailerRecyclerView;
@@ -45,6 +57,7 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapterO
     private ReviewAdapter mReviewAdapter;
     private TextView mErrorMessageDisplay;
     Button mButton;
+    private int buttonColor;
 
     private int id;
     private String title;
@@ -54,21 +67,9 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapterO
     private String poster;
     private String plot;
 
-    // Extra for the task ID to be received in the intent
-    public static final String EXTRA_TASK_ID = "extraTaskId";
-    // Extra for the task ID to be received after rotation
-    public static final String INSTANCE_TASK_ID = "instanceTaskId";
-    // Constants for favorite
-    public static final int FAVAROTE = 1;
-    public static final int UNFAVORITE = 2;
-    // Constant for default task id to be used when not in update mode
-    private static final int DEFAULT_TASK_ID = -1;
-
-
     // Member variable for the Database
     private AppDatabase mDb;
 
-    private int mMovieId = DEFAULT_TASK_ID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +77,10 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapterO
         setContentView(R.layout.activity_detail);
 
         ImageView posterIv = findViewById(R.id.image_iv);
+
+        mDb = AppDatabase.getInstance(getApplicationContext());
+
+
         mButton = findViewById(R.id.saveButton);
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -83,7 +88,6 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapterO
                 onSaveButtonClicked();
             }
         });
-
 
         Movie movie = (Movie) getIntent().getParcelableExtra("parcel_data");
 
@@ -101,12 +105,37 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapterO
            plot = movie.getPlot();
            title = movie.getTitle();
 
+        // COMPLETED (9) Remove the logging and the call to loadTaskById, this is done in the ViewModel now
+        // COMPLETED (10) Declare a AddTaskViewModelFactory using mDb and mTaskId
+        DetailActivityViewModelFactory factory = new DetailActivityViewModelFactory(mDb, id);
+        // COMPLETED (11) Declare a AddTaskViewModel variable and initialize it by calling ViewModelProviders.of
+        // for that use the factory created above AddTaskViewModel
+        final DetailActivityViewModel viewModel
+                = ViewModelProviders.of(this, factory).get(DetailActivityViewModel.class);
+
+
+        String favouriteTitle;
+        try{favouriteTitle= viewModel.getFavouriteTitle((Integer) id);}
+        catch (Exception e){
+            favouriteTitle = null;
+        }
+        if (favouriteTitle == null) {
+            isFavourite = false;
+        } else {
+            isFavourite = true;
+        }
+
         populateUI(movie);
         Picasso.with(this)
                 .load(movie.getPoster())
                 .into(posterIv);
 
         setTitle(title);
+
+        if (isFavourite == true){
+            buttonColor = R.color.colorAccentDark;
+            mButton.setBackgroundColor(buttonColor);
+            mButton.setText("MY COLLECTION");}
 
         mErrorMessageDisplay = (TextView) findViewById(R.id.tv_error_message_display_detail);
         mTrailerRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_trailers);
@@ -141,6 +170,10 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapterO
         /* Setting the adapter attaches it to the RecyclerView in our layout. */
         mReviewRecyclerView.setAdapter(mReviewAdapter);
         loadReviewData();
+    }
+
+    public final int getIdFromDetail(){
+        return id;
     }
 
     private void closeOnError() {
@@ -194,6 +227,7 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapterO
 
         TextView plotView = (TextView) findViewById(R.id.plot_tv);
         plotView.setText(movie.getPlot());
+
     }
 
     /**
@@ -232,11 +266,7 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapterO
         Trailer trailer;
         trailer = singleTrailer;
         String key = trailer.getTrailerKey();
-
-        // COMPLETED (5) Create a String that contains a URL ( make sure it starts with http:// or https:// )
         String urlAsString = key;
-
-        // COMPLETED (6) Replace the Toast with a call to openWebPage, passing in the URL String from the previous step
         openWebPage(urlAsString);
     }
 
@@ -248,26 +278,12 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapterO
     }
 
     private void openWebPage(String url) {
-        // COMPLETED (2) Use Uri.parse to parse the String into a Uri
-        /*
-         * We wanted to demonstrate the Uri.parse method because its usage occurs frequently. You
-         * could have just as easily passed in a Uri as the parameter of this method.
-         */
         Uri webpage = Uri.parse(url);
 
-        // COMPLETED (3) Create an Intent with Intent.ACTION_VIEW and the webpage Uri as parameters
-        /*
-         * Here, we create the Intent with the action of ACTION_VIEW. This action allows the user
-         * to view particular content. In this case, our webpage URL.
-         */
+       // This action allows the user to view our webpage URL.
         Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
 
-        // COMPLETED (4) Verify that this Intent can be launched and then call startActivity
-        /*
-         * This is a check we perform with every implicit Intent that we launch. In some cases,
-         * the device where this code is running might not have an Activity to perform the action
-         * with the data we've specified. Without this check, in those cases your app would crash.
-         */
+        // Verify that this Intent can be launched and then call startActivity
         if (intent.resolveActivity(getPackageManager()) != null) {
             startActivity(intent);
         }
@@ -341,24 +357,33 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapterO
         }
     }
 
+
     public void onSaveButtonClicked() {
-        final MovieEntry movieEntry = new MovieEntry(id,  title, originalTitle, releaseDate, voteAverage, poster, plot);
-        AppExecutors.getInstance().diskIO().execute(new Runnable() {
-            @Override
-            public void run() {
-                if (mMovieId == DEFAULT_TASK_ID) {
-                    // insert new task
-                    mDb.movieDao().insertTask(movieEntry);
-                } else {
-                    //update task
-                    movieEntry.setId(mMovieId);
-                    mDb.movieDao().updateTask(movieEntry);
+
+        if (isFavourite == false) {
+            final MovieEntry movieEntry = new MovieEntry(id, title, originalTitle, releaseDate, voteAverage, poster, plot);
+            AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                @Override
+                public void run() {
+                        // insert new task
+                        mDb.movieDao().insertTask(movieEntry);
                 }
-                finish();
-            }
-        });
+            });
+            mButton.setText("MY FAVOURITE MOVIE");
+
+            isFavourite = true;
+        }
+        else {
+            // Delete from favourites
+            AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                @Override
+                public void run() {
+                    mDb.movieDao().deleteById(id);
+                }
+            });
+            mButton.setText("NEW FAVOURITE?");
+            isFavourite = false;
+        }
+
     }
-
-
-
 }
