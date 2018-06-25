@@ -46,12 +46,10 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerA
      */
     public class TrailerAdapterViewHolder extends RecyclerView.ViewHolder implements OnClickListener {
         public final TextView mTrailerTextView;
-        //public final VideoView mTrailerVideoView;
 
         public TrailerAdapterViewHolder(View view) {
             super(view);
             mTrailerTextView = (TextView) view.findViewById(R.id.trailerName);
-           // mTrailerVideoView = (VideoView) view.findViewById(R.id.trailerVideo);
             view.setOnClickListener(this);
         }
 
@@ -98,8 +96,11 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerA
     @Override
     public void onBindViewHolder(TrailerAdapterViewHolder trailerAdapterViewHolder, int position) {
         Trailer singleTrailer = mTrailerData[position];
+
         if (singleTrailer != null){
-        trailerAdapterViewHolder.mTrailerTextView.setText(singleTrailer.getTrailerName()); }
+        trailerAdapterViewHolder.mTrailerTextView.setText(singleTrailer.getTrailerName());
+        Log.d("OnBind :", "name :" + singleTrailer.getTrailerName());
+        }
 
     }
 
@@ -114,8 +115,6 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerA
         if (null == mTrailerData) return 0;
         return mTrailerData.length;
     }
-
-
 
     public void setTrailerData(Trailer[] trailerData) {
         mTrailerData = trailerData;

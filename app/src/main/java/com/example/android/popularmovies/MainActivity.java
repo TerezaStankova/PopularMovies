@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -42,6 +43,9 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
     private MovieAdapter mMovieAdapter;
     private TextView mErrorMessageDisplay;
     private ProgressBar mLoadingIndicator;
+    private int optionSelected = 0;
+    private Spinner spinner;
+    private Movie[] movies;
 
     private AppDatabase mDb;
 
@@ -73,8 +77,22 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
          */
         mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator);
         /* Once all of our views are setup, we can load the data. */
-        loadMovieData();
+
         mDb = AppDatabase.getInstance(getApplicationContext());
+
+        if (savedInstanceState != null)
+        {
+            // Load variables here and overrite the default values
+            optionSelected = savedInstanceState.getInt("mySpinner", 0);
+        }
+
+        if(optionSelected != 2){
+            Log.d("Optionselected", optionSelected + "a");
+            loadMovieData();
+        }
+
+        else {setupViewModel();
+        }
     }
 
     /**
@@ -171,6 +189,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
         protected void onPostExecute(Movie[] movieData) {
             mLoadingIndicator.setVisibility(View.INVISIBLE);
             if (movieData != null) {
+                movies = new Movie[movieData.length];
+                movies = movieData;
                 showMovieDataView();
                 mMovieAdapter.setMovieData(movieData);
             } else {
@@ -217,6 +237,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
     }*/
 
     private void setupViewModel() {
+        showMovieDataView();
         MainViewModel viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
         viewModel.getTasks().observe(this, new Observer<List<MovieEntry>>() {
             @Override
@@ -241,7 +262,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
         View view = mSpinnerItem.getActionView();
         if (view instanceof Spinner)
         {
-            Spinner spinner = (Spinner) view;
+            spinner = (Spinner) view;
             spinner.setOnItemSelectedListener(this);
 
             ArrayAdapter aa = ArrayAdapter.createFromResource( this,
@@ -250,7 +271,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
             spinner.setAdapter(aa);
         }
 
-
+        spinner.setSelection(optionSelected);
 
        return true;
     }
@@ -287,15 +308,22 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
             case 2:
                 //List favourite movies
                 mMovieAdapter.setMovieData(null);
-                showMovieDataView();
                 setupViewModel();
                 break;
         }
     }
     public void onNothingSelected(AdapterView<?> arg0) {
-        // Order by popularity
-        NetworkUtils.changeBaseUrl("popular");
-        mMovieAdapter.setMovieData(null);
-        loadMovieData();
+
+            // Order by popularity
+            NetworkUtils.changeBaseUrl("popular");
+            mMovieAdapter.setMovieData(null);
+            loadMovieData();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState)
+    {
+        super.onSaveInstanceState(savedInstanceState);
+        savedInstanceState.putInt("mySpinner", spinner.getSelectedItemPosition());
     }
 }

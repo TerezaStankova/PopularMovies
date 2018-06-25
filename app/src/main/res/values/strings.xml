@@ -25,4 +25,6 @@
     <string name="actionbar_spinner">Spinner to order movies</string>
     <string name="trailers_label">Trailers</string>
     <string name="reviews">Reviews</string>
+    <string name="new_favourite">NEW FAVOURITE?</string>
+    <string name="my_favourite">MY FAVOURITE MOVIE</string>
 </resources>

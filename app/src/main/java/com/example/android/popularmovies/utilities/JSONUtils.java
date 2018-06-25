@@ -1,6 +1,8 @@
 package com.example.android.popularmovies.utilities;
 
 import android.content.Context;
+import android.util.Log;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -11,7 +13,7 @@ import com.example.android.popularmovies.model.Trailer;
 
 public class JSONUtils {
 
-    //Parse data from Json for posters
+    //Parse Movie data from Json
     public static Movie[] getMovieDataFromJson(Context context, String movieJsonStr)
             throws JSONException {
 
@@ -78,31 +80,43 @@ public class JSONUtils {
         JSONObject trailerJson = new JSONObject(trailerJsonStr);
         JSONArray trailerArray = trailerJson.getJSONArray(OWM_RESULTS);
 
-        parsedTrailerData = new Trailer[trailerArray.length()];
         int a = 0;
 
         for (int i = 0; i < trailerArray.length(); i++) {
+            String type;
+
+
+            /* Get the JSON object representing the trailer's type */
+            JSONObject trailerInfo = trailerArray.getJSONObject(i);
+            type = trailerInfo.getString(OWM_TYPE);
+            Log.d("Type", " is " + type);
+
+            /*Get number of trailers in videos */
+           if (type.equals("Trailer")){
+               a++;
+            }
+        }
+
+        Log.d("Type", " is " + a);
+        parsedTrailerData = new Trailer[a];
+
+        for (int i = 0; i < parsedTrailerData.length; i++) {
+            Log.d("ParsedData length", " is " + parsedTrailerData.length);
             String name;
             String key;
-            String type;
             String whole_key;
+            String type;
 
             /* Get the JSON object representing the trailer */
             JSONObject trailerInfo = trailerArray.getJSONObject(i);
             type = trailerInfo.getString(OWM_TYPE);
 
-            name = trailerInfo.getString(OWN_NAME);
-            key = trailerInfo.getString(OWM_KEY);
-            whole_key =  "https://m.youtube.com/watch?v=" + key;
-            parsedTrailerData[i] = new Trailer(name, whole_key);
-
-           // if (type.equals("Trailer")){
-           //     name = trailerInfo.getString(OWN_NAME);
-           //     key = trailerInfo.getString(OWM_KEY);
-           //     whole_key =  "https://wwww.youtube.com/watch?v=" + key;
-           //     parsedTrailerData[a] = new Trailer(name, whole_key);
-           //     a++;
-          //  }
+            if (type.equals("Trailer")){
+                name = trailerInfo.getString(OWN_NAME);
+                key = trailerInfo.getString(OWM_KEY);
+                whole_key =  "https://wwww.youtube.com/watch?v=" + key;
+                parsedTrailerData[i] = new Trailer(name, whole_key);
+            }
 
         }
 

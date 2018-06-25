@@ -1,33 +1,28 @@
 package com.example.android.popularmovies;
 
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
+
 import android.widget.ImageView;
-import android.widget.RadioGroup;
+
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.popularmovies.database.AppDatabase;
-import com.example.android.popularmovies.database.MovieDao;
 import com.example.android.popularmovies.database.MovieEntry;
 import com.example.android.popularmovies.model.Review;
 import com.example.android.popularmovies.model.Trailer;
@@ -39,17 +34,11 @@ import com.example.android.popularmovies.TrailerAdapter.TrailerAdapterOnClickHan
 import com.example.android.popularmovies.ReviewAdapter.ReviewAdapterOnClickHandler;
 
 import java.net.URL;
-import java.util.Date;
-import java.util.List;
-
-import static com.example.android.popularmovies.R.color.colorAccentDark;
-import static com.example.android.popularmovies.R.color.colorPrimaryLight;
 
 public class DetailActivity extends AppCompatActivity implements TrailerAdapterOnClickHandler, ReviewAdapterOnClickHandler {
 
-    private static final String TAG = DetailActivity.class.getSimpleName();
-
     boolean isFavourite;
+    private String favouriteTitle;
 
     // Fields for views
     private RecyclerView mTrailerRecyclerView;
@@ -57,8 +46,10 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapterO
     private TrailerAdapter mTrailerAdapter;
     private ReviewAdapter mReviewAdapter;
     private TextView mErrorMessageDisplay;
+    private TextView mReviewLabel;
+    private TextView mTrailerLabel;
     Button mButton;
-    private String favouriteTitle;
+
 
     private int id;
     private String title;
@@ -101,15 +92,19 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapterO
            plot = movie.getPlot();
            title = movie.getTitle();
 
-        // COMPLETED (9) Remove the logging and the call to loadTaskById, this is done in the ViewModel now
-        // COMPLETED (10) Declare a AddTaskViewModelFactory using mDb and mTaskId
+        // call to loadTaskById, this is done in the ViewModel
         DetailActivityViewModelFactory factory = new DetailActivityViewModelFactory(mDb, id);
-        // COMPLETED (11) Declare a AddTaskViewModel variable and initialize it by calling ViewModelProviders.of
-        // for that use the factory created above AddTaskViewModel
         final DetailActivityViewModel viewModel
                 = ViewModelProviders.of(this, factory).get(DetailActivityViewModel.class);
 
-
+        if (savedInstanceState != null)
+        {
+            // Load variables here and overwrite the default values
+            isFavourite = savedInstanceState.getBoolean("isFavourite", true);
+            Log.d("SaveInstance FAVOURITE","IS IT??" + isFavourite);
+            setButton(isFavourite);
+        }
+        else{
         AppExecutors.getInstance().diskIO().execute(new Runnable() {
             @Override
             public void run() {
@@ -120,22 +115,11 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapterO
                 } else {
                     isFavourite = true;
                 }
+               setButton(isFavourite);
+
+                Log.d("Is FAVOURITE?????","IS IT??" + isFavourite);
             }
-        });
-
-       /*
-        try{
-        favouriteTitle= viewModel.getFavouriteTitle(id);
-
-        }
-        catch (Exception e){
-            favouriteTitle = null;
-            Log.d("favourite Title","tryFail" +  favouriteTitle);
-                    }*/
-
-
-
-        Log.d("Is FAVOURITE?????","IS IT??" + isFavourite);
+        });}
 
         populateUI(movie);
         Picasso.with(this)
@@ -144,14 +128,17 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapterO
 
         setTitle(title);
 
-        mErrorMessageDisplay = (TextView) findViewById(R.id.tv_error_message_display_detail);
-        mTrailerRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_trailers);
         /* This TextView is used to display errors and will be hidden if there are no errors */
+        mErrorMessageDisplay = (TextView) findViewById(R.id.tv_error_message_display_detail);
+        mTrailerLabel = (TextView) findViewById(R.id.trailers_label);
+        mReviewLabel = (TextView) findViewById(R.id.reviews_label);
+        mTrailerRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_trailers);
+
 
        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-
+       layoutManager.setAutoMeasureEnabled(true);
         mTrailerRecyclerView.setLayoutManager(layoutManager);
-        //mRecyclerView.setHasFixedSize(true);
+        mTrailerRecyclerView.setHasFixedSize(false);
         /*
          * The ForecastAdapter is responsible for linking our data with the Views that
          * will end up displaying our data.
@@ -166,6 +153,7 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapterO
         /* This TextView is used to display errors and will be hidden if there are no errors */
 
         LinearLayoutManager layoutManagerReviews = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        layoutManagerReviews.setAutoMeasureEnabled(true);
 
         mReviewRecyclerView.setLayoutManager(layoutManagerReviews);
         //mRecyclerView.setHasFixedSize(true);
@@ -186,8 +174,12 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapterO
         });
     }
 
-    public final int getIdFromDetail(){
-        return id;
+
+    public void setButton(boolean isFavourite){
+        if (isFavourite == true){
+            mButton.setText("MY FAVOURITE MOVIE");}
+        else if (isFavourite == false) {mButton.setText("NEW FAVOURITE?");
+        }
     }
 
     private void closeOnError() {
@@ -201,7 +193,7 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapterO
             new FetchDetailTrailerTask().execute();
         }
         else {
-            showErrorMessage();
+            showTrailerErrorMessage();
         }
     }
 
@@ -211,7 +203,7 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapterO
             new FetchDetailReviewTask().execute();
         }
         else {
-            showErrorMessage();
+            showReviewErrorMessage();
         }
     }
 
@@ -241,11 +233,6 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapterO
 
         TextView plotView = (TextView) findViewById(R.id.plot_tv);
         plotView.setText(movie.getPlot());
-
-        if (isFavourite == true){
-            mButton.setText("MY FAVOURITE MOVIE");}
-            else {mButton.setText("NEW FAVOURITE?");
-        }
     }
 
     /**
@@ -270,29 +257,31 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapterO
      * This method will make the error message visible and hide the trailer
      * View.
      */
-    private void showErrorMessage() {
+
+    private void showReviewErrorMessage() {
         /* First, hide the currently visible data */
-        mTrailerRecyclerView.setVisibility(View.INVISIBLE);
+        mReviewRecyclerView.setVisibility(View.INVISIBLE);
         /* Then, show the error */
-        mErrorMessageDisplay.setVisibility(View.VISIBLE);
+        mReviewLabel.setVisibility(View.INVISIBLE);
     }
 
+    private void showTrailerErrorMessage() {
+        /* First, hide the currently visible data */
+        mReviewRecyclerView.setVisibility(View.INVISIBLE);
+        /* Then, show the error */
+        mTrailerLabel.setVisibility(View.VISIBLE);
+    }
 
     @Override
     public void onClick(Trailer singleTrailer) {
-        Context context = this;
         Trailer trailer;
         trailer = singleTrailer;
         String key = trailer.getTrailerKey();
-        String urlAsString = key;
-        openWebPage(urlAsString);
+        openWebPage(key);
     }
 
     @Override
     public void onClick(Review singleReview) {
-        Context context = this;
-        Review review;
-        review = singleReview;
     }
 
     private void openWebPage(String url) {
@@ -336,7 +325,7 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapterO
                showTrailerDataView();
                mTrailerAdapter.setTrailerData(trailerData);
             } else {
-               showErrorMessage();
+               showTrailerErrorMessage();
             }
         }
     }
@@ -370,7 +359,7 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapterO
                 showReviewDataView();
                 mReviewAdapter.setReviewData(reviewData);
             } else {
-                showErrorMessage();
+                showReviewErrorMessage();
             }
         }
     }
@@ -378,7 +367,7 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapterO
 
     public void onSaveButtonClicked() {
 
-        if (isFavourite == false) {
+        if (!isFavourite) {
             final MovieEntry movieEntry = new MovieEntry(id, title, originalTitle, releaseDate, voteAverage, poster, plot);
             AppExecutors.getInstance().diskIO().execute(new Runnable() {
                 @Override
@@ -388,7 +377,7 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapterO
                     Log.d("set task", "set task TITLEENTERED?" + mDb.movieDao().titleById(id));
                 }
             });
-            mButton.setText("MY FAVOURITE MOVIE");
+            mButton.setText(R.string.my_favourite);
             isFavourite = true;
         }
         else {
@@ -397,13 +386,20 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapterO
                 @Override
                 public void run() {
                     mDb.movieDao().deleteById(id);
-                    Log.d("delete task","set task TITLEENTERED?" + mDb.movieDao().titleById(id));
+                    Log.d("delete task","delete task TITLEENTERED?" + mDb.movieDao().titleById(id));
                 }
             });
 
-            mButton.setText("NEW FAVOURITE?");
+            mButton.setText(R.string.new_favourite);
             isFavourite = false;
         }
 
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState)
+    {
+        super.onSaveInstanceState(savedInstanceState);
+        savedInstanceState.putBoolean("isFavourite", isFavourite);
     }
 }

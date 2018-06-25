@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+<android.support.v4.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -72,9 +72,10 @@
                 <Button
                     android:id="@+id/saveButton"
                     android:layout_width="wrap_content"
-                    android:layout_height="81dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:drawableBottom="@android:drawable/star_big_on"
-                    android:text="Favourite" />
+                    android:text="New Favourite" />
 
             </LinearLayout>
 
@@ -112,30 +113,31 @@
                 android:id="@+id/tv_error_message_display"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="16dp"
                 android:text="@string/error_message"
                 android:textSize="20sp"
                 android:visibility="invisible" />
 
         </LinearLayout>
 
-
         <TextView
+            android:id="@+id/trailers_label"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/trailers_label"
-            android:textStyle="bold"
             android:textColor="@color/colorAccentDark"
-            android:layout_marginTop="@dimen/activity_vertical_margin"/>
+            android:textStyle="bold" />
 
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recyclerview_trailers"
+            android:nestedScrollingEnabled="false"
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="visible"/>
 
         <TextView
+            android:id="@+id/reviews_label"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/reviews"
@@ -162,4 +164,4 @@
 
 
 
-</ScrollView>
+</android.support.v4.widget.NestedScrollView>
