@@ -82,9 +82,9 @@ public class JSONUtils {
 
         int a = 0;
 
+        //Get number of trailers
         for (int i = 0; i < trailerArray.length(); i++) {
             String type;
-
 
             /* Get the JSON object representing the trailer's type */
             JSONObject trailerInfo = trailerArray.getJSONObject(i);
@@ -97,10 +97,10 @@ public class JSONUtils {
             }
         }
 
-        Log.d("Type", " is " + a);
         parsedTrailerData = new Trailer[a];
 
-        for (int i = 0; i < parsedTrailerData.length; i++) {
+        int b = 0;
+        for (int i = 0; b < parsedTrailerData.length; i++) {
             Log.d("ParsedData length", " is " + parsedTrailerData.length);
             String name;
             String key;
@@ -113,9 +113,15 @@ public class JSONUtils {
 
             if (type.equals("Trailer")){
                 name = trailerInfo.getString(OWN_NAME);
+                Log.d("Name", " is " + i + name);
                 key = trailerInfo.getString(OWM_KEY);
-                whole_key =  "https://wwww.youtube.com/watch?v=" + key;
-                parsedTrailerData[i] = new Trailer(name, whole_key);
+                whole_key =  "https://m.youtube.com/watch?v=" + key;
+                parsedTrailerData[b] = new Trailer(name, whole_key);
+                b++;
+            }
+            else {
+                name = trailerInfo.getString(OWN_NAME);
+                Log.d("Type is not Trailer", " is " + type + name);
             }
 
         }

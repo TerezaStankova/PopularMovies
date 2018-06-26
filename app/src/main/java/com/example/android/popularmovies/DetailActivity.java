@@ -10,15 +10,18 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 
 import android.widget.ImageView;
 
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,6 +29,7 @@ import com.example.android.popularmovies.database.AppDatabase;
 import com.example.android.popularmovies.database.MovieEntry;
 import com.example.android.popularmovies.model.Review;
 import com.example.android.popularmovies.model.Trailer;
+import com.example.android.popularmovies.ui.TrailerFragment;
 import com.example.android.popularmovies.utilities.JSONUtils;
 import com.example.android.popularmovies.utilities.NetworkUtils;
 import com.squareup.picasso.Picasso;
@@ -48,6 +52,7 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapterO
     private TextView mErrorMessageDisplay;
     private TextView mReviewLabel;
     private TextView mTrailerLabel;
+    private LinearLayoutManager layoutManagerReviews;
     Button mButton;
 
 
@@ -67,6 +72,12 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapterO
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
+
+        if(savedInstanceState == null) {
+
+            new FetchDetailTrailerTask2().execute();
+
+        }
 
         ImageView posterIv = findViewById(R.id.image_iv);
 
@@ -128,7 +139,7 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapterO
 
         setTitle(title);
 
-        /* This TextView is used to display errors and will be hidden if there are no errors */
+        /* This TextView is used to display errors and will be hidden if there are no errors
         mErrorMessageDisplay = (TextView) findViewById(R.id.tv_error_message_display_detail);
         mTrailerLabel = (TextView) findViewById(R.id.trailers_label);
         mReviewLabel = (TextView) findViewById(R.id.reviews_label);
@@ -142,29 +153,29 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapterO
         /*
          * The ForecastAdapter is responsible for linking our data with the Views that
          * will end up displaying our data.
-         */
+
         mTrailerAdapter = new TrailerAdapter(this);
-        /* Setting the adapter attaches it to the RecyclerView in our layout. */
+        /* Setting the adapter attaches it to the RecyclerView in our layout.
         mTrailerRecyclerView.setAdapter(mTrailerAdapter);
         loadTrailerData();
 
 
         mReviewRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_reviews);
-        /* This TextView is used to display errors and will be hidden if there are no errors */
+        /* This TextView is used to display errors and will be hidden if there are no errors
 
-        LinearLayoutManager layoutManagerReviews = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        layoutManagerReviews = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         layoutManagerReviews.setAutoMeasureEnabled(true);
 
         mReviewRecyclerView.setLayoutManager(layoutManagerReviews);
-        //mRecyclerView.setHasFixedSize(true);
+        mReviewRecyclerView.setHasFixedSize(false);
         /*
          * The ForecastAdapter is responsible for linking our data with the Views that
          * will end up displaying our data.
          */
         mReviewAdapter = new ReviewAdapter(this);
-        /* Setting the adapter attaches it to the RecyclerView in our layout. */
+        /* Setting the adapter attaches it to the RecyclerView in our layout.
         mReviewRecyclerView.setAdapter(mReviewAdapter);
-        loadReviewData();
+        loadReviewData();*/
 
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -172,6 +183,7 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapterO
                 onSaveButtonClicked();
             }
         });
+
     }
 
 
@@ -187,6 +199,7 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapterO
         Toast.makeText(this, R.string.detail_error_message, Toast.LENGTH_SHORT).show();
     }
 
+    /*
     private void loadTrailerData() {
         if (isConnected() == true) {
             showTrailerDataView();
@@ -201,10 +214,12 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapterO
         if (isConnected() == true) {
             showReviewDataView();
             new FetchDetailReviewTask().execute();
+            //new FetchDetailTrailerTask2().execute();
         }
         else {
             showReviewErrorMessage();
         }
+
     }
 
     /**Check for internet connection before making the actual request to the API,
@@ -238,19 +253,21 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapterO
     /**
      * This method will make the View for the trailers for movie data visible and
      * hide the error message
-     */
+
     private void showTrailerDataView() {
-        /* First, make sure the error is invisible */
-        mErrorMessageDisplay.setVisibility(View.INVISIBLE);
-        /* Then, make sure the movie data is visible */
+        /* First, make sure the error is invisible
+        //mErrorMessageDisplay.setVisibility(View.INVISIBLE);
+        /* Then, make sure the movie data is visible
         mTrailerRecyclerView.setVisibility(View.VISIBLE);
+        mTrailerLabel.setVisibility(View.VISIBLE);
     }
 
     private void showReviewDataView() {
-        /* First, make sure the error is invisible */
-        mErrorMessageDisplay.setVisibility(View.INVISIBLE);
-        /* Then, make sure the movie data is visible */
+        /* First, make sure the error is invisible
+        //mErrorMessageDisplay.setVisibility(View.INVISIBLE);
+        /* Then, make sure the movie data is visible
         mReviewRecyclerView.setVisibility(View.VISIBLE);
+        mReviewLabel.setVisibility(View.VISIBLE);
     }
 
     /**
@@ -269,7 +286,7 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapterO
         /* First, hide the currently visible data */
         mReviewRecyclerView.setVisibility(View.INVISIBLE);
         /* Then, show the error */
-        mTrailerLabel.setVisibility(View.VISIBLE);
+        mTrailerLabel.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -295,6 +312,8 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapterO
             startActivity(intent);
         }
     }
+
+    /*
 
     public class FetchDetailTrailerTask extends AsyncTask<String, Void, Trailer[]> {
 
@@ -328,8 +347,87 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapterO
                showTrailerErrorMessage();
             }
         }
+    }*/
+
+
+
+    public class FetchDetailTrailerTask2 extends AsyncTask<String, Void, Trailer[]> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Trailer[] doInBackground(String... params) {
+
+            URL trailerRequestUrl = NetworkUtils.buildVideoUrl(id);
+
+            try {
+                String jsonTrailerResponse = NetworkUtils.getResponseFromHttpUrl(trailerRequestUrl);
+
+                return JSONUtils.getTrailerDataFromJson(DetailActivity.this, jsonTrailerResponse);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Trailer[] trailerData) {
+
+        // Retrieve list index values that were sent through an intent; use them to display the desired Android-Me body part image
+            // Use setListindex(int index) to set the list index for all BodyPartFragments
+
+            // Create a new head  TrailerFragment
+            TrailerFragment trailerFragment = new TrailerFragment();
+
+            // Set the list of image id's for the head fragment and set the position to the second image in the list
+            trailerFragment.setTrailers(trailerData);
+
+            // Add the fragment to its container using a FragmentManager and a Transaction
+            FragmentManager fragmentManager = getSupportFragmentManager();
+
+            fragmentManager.beginTransaction()
+                    .add(R.id.trailer_container, trailerFragment)
+                    .commit();
+
+
+            /*
+            if (trailerData != null) {
+                for (final Trailer trailer : trailerData) {
+                    if (trailer != null) {
+
+                    View mMovieTrailerItem = LayoutInflater.from(DetailActivity.this).inflate(
+                            R.layout.trailer_list_item, null);
+
+                    mMovieTrailerItem.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            openWebPage(trailer.getTrailerKey());
+                        }
+                    });
+
+
+                    TextView mMovieTrailerTitle = (TextView) mMovieTrailerItem.findViewById(R.id.trailer_name);
+                    mMovieTrailerTitle.setText(trailer.getTrailerName());
+
+                    LinearLayout mMovieTrailerC = (LinearLayout) mMovieTrailerItem.findViewById(R.id.container_trailer);
+                        if (mMovieTrailerC != null) {
+                    mMovieTrailerC.addView(mMovieTrailerItem);}}
+                }
+
+            } else {
+                showTrailerErrorMessage();
+            }*/
+        }
+
+
+
     }
 
+    /*
     public class FetchDetailReviewTask extends AsyncTask<String, Void, Review[]> {
 
         @Override
@@ -362,7 +460,7 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapterO
                 showReviewErrorMessage();
             }
         }
-    }
+    }*/
 
 
     public void onSaveButtonClicked() {

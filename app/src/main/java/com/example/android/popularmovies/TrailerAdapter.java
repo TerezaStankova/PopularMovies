@@ -6,12 +6,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.VideoView;
 
 import com.example.android.popularmovies.model.Trailer;
-import com.squareup.picasso.Picasso;
+
 import android.view.View.OnClickListener;
 
 
@@ -49,7 +47,7 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerA
 
         public TrailerAdapterViewHolder(View view) {
             super(view);
-            mTrailerTextView = (TextView) view.findViewById(R.id.trailerName);
+            mTrailerTextView = (TextView) view.findViewById(R.id.trailer_name);
             view.setOnClickListener(this);
         }
 

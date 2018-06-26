@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.NestedScrollView
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".DetailActivity">
+    tools:context=".DetailActivity"
+    android:id="@+id/scrollView_detail">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -117,21 +118,11 @@
                 android:textSize="20sp"
                 android:visibility="invisible" />
 
-        </LinearLayout>
 
-        <TextView
-            android:id="@+id/trailers_label"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/trailers_label"
-            android:textColor="@color/colorAccentDark"
-            android:textStyle="bold" />
-
-
+            <!--
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recyclerview_trailers"
             android:nestedScrollingEnabled="false"
-
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="visible"/>
@@ -143,13 +134,50 @@
             android:text="@string/reviews"
             android:textStyle="bold"
             android:textColor="@color/colorAccentDark"
-            android:layout_marginTop="@dimen/activity_vertical_margin"/>
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:visibility="invisible"/>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recyclerview_reviews"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="visible" />
+
+    </LinearLayout>
+
+        <LinearLayout
+            android:minHeight="50dp"
+            android:id="@+id/container_trailer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@color/colorAccent">
+
+        <TextView
+            android:id="@+id/trailersa"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/trailers_label"
+            android:textColor="@color/colorAccentDark"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/trailers_label"
+            android:textColor="@color/colorAccentDark"
+            android:textStyle="bold" />
+
+        -->
+
+        </LinearLayout>
+
+
+            <!-- Container for trailers -->
+            <FrameLayout
+                android:id="@+id/trailer_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
 
         <TextView
             android:id="@+id/tv_error_message_display_detail"
@@ -161,7 +189,4 @@
             android:visibility="invisible" />
 
     </LinearLayout>
-
-
-
-</android.support.v4.widget.NestedScrollView>
+</ScrollView>

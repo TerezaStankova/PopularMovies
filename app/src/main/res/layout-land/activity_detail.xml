@@ -142,6 +142,8 @@
                 android:scaleType="centerCrop" />
     </LinearLayout>
 
+        <!--
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -179,6 +181,13 @@
             android:text="@string/error_message"
             android:textSize="20sp"
             android:visibility="invisible" />
+
+            -->
+
+        <FrameLayout
+            android:id="@+id/trailer_container"
+            android:layout_width="match_parent"
+            android:layout_height="180dp"/>
 
     </LinearLayout>
  </ScrollView>
