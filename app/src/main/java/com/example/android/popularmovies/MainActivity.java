@@ -43,6 +43,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
     private TextView mErrorMessageDisplay;
     private ProgressBar mLoadingIndicator;
     private int optionSelected = 0;
+    private boolean newMenu;
     private Spinner spinner;
     private Movie[] movies;
 
@@ -67,8 +68,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setHasFixedSize(true);
         /*
-         * The ForecastAdapter is responsible for linking our data with the Views that
-         * will end up displaying our data.
+         * The mMovieAdapter is responsible for linking data with the Views that
+         * will end up displaying the data.
          */
         mMovieAdapter = new MovieAdapter(this);
         /* Setting the adapter attaches it to the RecyclerView in our layout. */
@@ -88,15 +89,26 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
             optionSelected = savedInstanceState.getInt("mySpinner", 0);
             // Load the saved state (the array of trailers) if there is one
             movies = (Movie[]) savedInstanceState.getParcelableArray(MOVIES);
+            Log.d("SavedInstanceNotNull", optionSelected + "a");
         }
 
         /* Load the data. */
         if(optionSelected != 2){
             Log.d("Optionselected", optionSelected + "a");
-            loadMovieData();
+            if (movies != null){
+                showMovieDataView();
+                mMovieAdapter.setMovieData(null);
+                mMovieAdapter.setMovieData(movies);
+                Log.d("MoviesNotNull", optionSelected + "a");
+            }
+            else {
+                loadMovieData();
+                Log.d("MoviesNull", optionSelected + "a");
+            }
         }
 
         else {setupViewModel();
+            Log.d("setupViewModel", optionSelected + "a");
         }
     }
 
@@ -104,13 +116,12 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
      * This method will tell some background method to get the data in the background.
      */
     private void loadMovieData() {
-        if (isConnected() == true) {
-            showMovieDataView();
-            new FetchMovieTask().execute();
-        }
-        else {
-            showErrorMessage();
-        }
+            if (isConnected() == true) {
+                showMovieDataView();
+                new FetchMovieTask().execute();
+            } else {
+                showErrorMessage();
+            }
     }
 
     /**Check for internet connection before making the actual request to the API,
@@ -204,42 +215,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
         }
     }
 
-    /*
-    public class FetchFavouriteMovieTask extends AsyncTask<String, Void, Movie[]> {
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            mLoadingIndicator.setVisibility(View.VISIBLE);
-        }
-
-
-        @Override
-        protected Movie[] doInBackground(String... params) {
-
-            try {
-                List<MovieEntry> tasks = mMovieAdapter.setFavouriteMovies();
-                Movie moviesDatabase = (Movie) tasks;
-
-                return moviesDatabase;
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                return null;
-            }
-
-
-        @Override
-        protected void onPostExecute(Movie[] movieData) {
-            mLoadingIndicator.setVisibility(View.INVISIBLE);
-            if (movieData != null) {
-                showMovieDataView();
-                mMovieAdapter.setMovieData(movieData);
-            } else {
-                showErrorMessage();
-            }
-        }
-    }*/
 
     private void setupViewModel() {
         showMovieDataView();
@@ -256,6 +231,10 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+
+        newMenu = true;
+        Log.d("CreatingMenu", optionSelected + "newMenu" + newMenu);
+
         /* Use AppCompatActivity's method getMenuInflater to get a handle on the menu inflater */
         MenuInflater inflater = getMenuInflater();
         /* Use the inflater's inflate method to inflate our menu layout to this menu */
@@ -278,6 +257,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
 
         spinner.setSelection(optionSelected);
 
+        Log.d("SelectionSet", optionSelected + "a");
+
        return true;
     }
 
@@ -296,33 +277,78 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-        switch (position) {
-            case 0:
-                // Order by popularity when the popularity menu item is clicked
-                NetworkUtils.changeBaseUrl("popular");
-                mMovieAdapter.setMovieData(null);
-                loadMovieData();
-                break;
-            case 1:
-                // Order by top rated when the top rated menu item is clicked
-                NetworkUtils.changeBaseUrl("rating");
-                mMovieAdapter.setMovieData(null);
-                loadMovieData();
-                break;
+        if (newMenu == false) {
+            Log.d("onItemSelectedTriggered", position + "a");
+            switch (position) {
+                case 0:
+                    // Order by popularity when the popularity menu item is clicked
+                    NetworkUtils.changeBaseUrl("popular");
+                    mMovieAdapter.setMovieData(null);
+                    loadMovieData();
+                    break;
+                case 1:
+                    // Order by top rated when the top rated menu item is clicked
+                    NetworkUtils.changeBaseUrl("rating");
+                    mMovieAdapter.setMovieData(null);
+                    loadMovieData();
+                    break;
 
-            case 2:
-                //List favourite movies
-                mMovieAdapter.setMovieData(null);
-                setupViewModel();
-                break;
+                case 2:
+                    //List favourite movies
+                    mMovieAdapter.setMovieData(null);
+                    setupViewModel();
+                    break;
+            }
+        } else {
+            newMenu = false;
+            if (movies == null){
+                Log.d("NEWmoviesNull", position + "newMenu" + newMenu);
+                switch (position) {
+                    case 0:
+                        // Order by popularity when the popularity menu item is clicked
+                        NetworkUtils.changeBaseUrl("popular");
+                        mMovieAdapter.setMovieData(null);
+                        loadMovieData();
+                        break;
+                    case 1:
+                        // Order by top rated when the top rated menu item is clicked
+                        NetworkUtils.changeBaseUrl("rating");
+                        mMovieAdapter.setMovieData(null);
+                        loadMovieData();
+                        break;
+
+                    case 2:
+                        //List favourite movies
+                        mMovieAdapter.setMovieData(null);
+                        setupViewModel();
+                        break;
+                }
+            } else {
+                Log.d("NEWmoviesNotNull", position + "newMenu" + newMenu);
+                switch (position) {
+                    case 0:
+                        // Order by popularity when the popularity menu item is clicked
+                        NetworkUtils.changeBaseUrl("popular");
+                        mMovieAdapter.setMovieData(null);
+                        mMovieAdapter.setMovieData(movies);
+                        break;
+                    case 1:
+                        // Order by top rated when the top rated menu item is clicked
+                        NetworkUtils.changeBaseUrl("rating");
+                        mMovieAdapter.setMovieData(null);
+                        mMovieAdapter.setMovieData(movies);
+                        break;
+
+                    case 2:
+                        //List favourite movies
+                        mMovieAdapter.setMovieData(null);
+                        setupViewModel();
+                        break;
+                }
+            }
         }
     }
     public void onNothingSelected(AdapterView<?> arg0) {
-
-            // Order by popularity
-            NetworkUtils.changeBaseUrl("popular");
-            mMovieAdapter.setMovieData(null);
-            loadMovieData();
     }
 
     @Override
