@@ -18,8 +18,8 @@ import com.example.android.popularmovies.model.Trailer;
 
 public class TrailerFragment extends Fragment {
 
-    // Final Strings to store state information about the list of images and list index
-    public static final String TRAILER_LIST = "trailer_ids";
+    // Final Strings to store state information about the trailers
+    public static final String TRAILERS = "trailers";
 
     // Tag for logging
     private static final String TAG = "TrailerFragment";
@@ -41,7 +41,7 @@ public class TrailerFragment extends Fragment {
 
         // Load the saved state (the array of trailers) if there is one
         if (savedInstanceState != null) {
-            mTrailers = (Trailer[]) savedInstanceState.getParcelableArray(TRAILER_LIST);
+            mTrailers = (Trailer[]) savedInstanceState.getParcelableArray(TRAILERS);
         }
 
 
@@ -86,30 +86,27 @@ public class TrailerFragment extends Fragment {
 
         }
 
-    public void setTrailers(Trailer[] trailers) {
-        mTrailers = new Trailer[trailers.length];
-        mTrailers = trailers;
-    }
-
-    /**
-         * Save the current state of this fragment
-         */
-
-        @Override
-        public void onSaveInstanceState(Bundle currentState) {
-            currentState.putParcelableArray(TRAILER_LIST, mTrailers);
+        public void setTrailers(Trailer[] trailers) {
+            mTrailers = new Trailer[trailers.length];
+            mTrailers = trailers;
         }
 
         private void openWebPage(String url) {
             Uri webpage = Uri.parse(url);
 
-            // This action allows the user to view our webpage URL.
+            // This action allows the user to view the webpage URL.
             Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
 
             // Verify that this Intent can be launched and then call startActivity
             if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
                 startActivity(intent);
             }
+        }
+
+        /*Save the current state of this fragment*/
+        @Override
+        public void onSaveInstanceState(Bundle currentState) {
+            currentState.putParcelableArray(TRAILERS, mTrailers);
         }
 }
 

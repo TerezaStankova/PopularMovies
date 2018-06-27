@@ -32,8 +32,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/detail_original_title_label"
-                    style="@style/myDetailTitleStyle"
-                    android:layout_marginTop="@dimen/activity_vertical_margin"/>
+                    style="@style/myDetailTitleStyle"/>
 
                 <TextView
                     android:id="@+id/original_title_tv"
@@ -45,8 +44,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/detail_release_date_label"
-                    style="@style/myDetailTitleStyle"
-                    android:layout_marginTop="@dimen/activity_vertical_margin"/>
+                    style="@style/myDetailTitleStyle"/>
 
                 <TextView
                     android:id="@+id/release_date_tv"
@@ -58,8 +56,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/detail_vote_label"
-                    style="@style/myDetailTitleStyle"
-                    android:layout_marginTop="@dimen/activity_vertical_margin"/>
+                    style="@style/myDetailTitleStyle"/>
 
                 <TextView
                     android:id="@+id/vote_tv"
@@ -86,34 +83,17 @@
                 android:scaleType="centerCrop" />
         </LinearLayout>
 
-        <LinearLayout
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical|center_horizontal"
-            android:orientation="vertical">
+            android:text="@string/detail_plot_label"
+            style="@style/myDetailTitleStyle" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/activity_vertical_margin"
-                android:text="@string/detail_plot_label"
-                style="@style/myDetailTitleStyle" />
-
-            <TextView
-                android:id="@+id/plot_tv"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/TextOnLight" />
-
-            <TextView
-                android:id="@+id/tv_error_message_display"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/error_message"
-                android:textSize="20sp"
-                android:visibility="invisible" />
-
-        </LinearLayout>
+        <TextView
+            android:id="@+id/plot_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/TextOnLight" />
 
         <!-- Container for trailers -->
         <FrameLayout

@@ -32,7 +32,6 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:text="@string/detail_original_title_label"
                     style="@style/myDetailTitleStyle" />
 
@@ -55,7 +54,6 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/activity_vertical_margin"
                             android:text="@string/detail_release_date_label"
                             style="@style/myDetailTitleStyle" />
 
@@ -68,7 +66,6 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/activity_vertical_margin"
                             android:text="@string/detail_vote_label"
                             style="@style/myDetailTitleStyle" />
 
@@ -113,7 +110,6 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:text="@string/detail_plot_label"
                     style="@style/myDetailTitleStyle" />
 
@@ -135,49 +131,8 @@
                 android:layout_weight="1"
                 android:contentDescription="@string/movie_poster_content_description"
                 android:scaleType="centerCrop" />
+
     </LinearLayout>
-
-        <!--
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/trailers_label"
-            android:textStyle="bold"
-            android:textColor="@color/colorAccentDark"
-            android:layout_marginTop="@dimen/activity_vertical_margin"/>
-
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recyclerview_trailers"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="visible"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/reviews"
-            android:textStyle="bold"
-            android:textColor="@color/colorAccentDark"
-            android:layout_marginTop="@dimen/activity_vertical_margin"/>
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recyclerview_reviews"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="visible" />
-
-        <TextView
-            android:id="@+id/tv_error_message_display_detail"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="16dp"
-            android:text="@string/error_message"
-            android:textSize="20sp"
-            android:visibility="invisible" />
-
-            -->
 
         <FrameLayout
             android:id="@+id/trailer_container"

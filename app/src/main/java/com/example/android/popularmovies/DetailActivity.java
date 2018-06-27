@@ -274,7 +274,7 @@ public class DetailActivity extends AppCompatActivity {
                 public void run() {
                         // insert new task
                         mDb.movieDao().insertTask(movieEntry);
-                    Log.d("set task", "set task TITLEENTERED?" + mDb.movieDao().titleById(id));
+                    Log.d("set task", "new favourite movie" + mDb.movieDao().titleById(id));
                 }
             });
             mButton.setText(R.string.my_favourite);
@@ -286,7 +286,7 @@ public class DetailActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     mDb.movieDao().deleteById(id);
-                    Log.d("delete task","delete task TITLEENTERED?" + mDb.movieDao().titleById(id));
+                    Log.d("delete task","deleted movie: " + mDb.movieDao().titleById(id));
                 }
             });
 

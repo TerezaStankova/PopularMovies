@@ -8,9 +8,7 @@ public class Review implements Parcelable {
         private String author;
         private String content;
 
-        /**
-         * No args constructor for use in serialization
-         */
+    //Constructor for reviews
     public Review() {
         }
 

@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
-import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -49,6 +48,9 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
 
     private AppDatabase mDb;
 
+    // Final String to store state information about the movies
+    public static final String MOVIES = "movies";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,7 +78,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
          * hidden when no data is loading.
          */
         mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator);
-        /* Once all of our views are setup, we can load the data. */
+
 
         mDb = AppDatabase.getInstance(getApplicationContext());
 
@@ -84,8 +86,11 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
         {
             // Load variables here and overrite the default values
             optionSelected = savedInstanceState.getInt("mySpinner", 0);
+            // Load the saved state (the array of trailers) if there is one
+            movies = (Movie[]) savedInstanceState.getParcelableArray(MOVIES);
         }
 
+        /* Load the data. */
         if(optionSelected != 2){
             Log.d("Optionselected", optionSelected + "a");
             loadMovieData();
@@ -325,5 +330,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
     {
         super.onSaveInstanceState(savedInstanceState);
         savedInstanceState.putInt("mySpinner", spinner.getSelectedItemPosition());
+        savedInstanceState.putParcelableArray(MOVIES, movies);
+
     }
 }
