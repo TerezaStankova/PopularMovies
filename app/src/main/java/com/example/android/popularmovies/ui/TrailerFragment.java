@@ -1,29 +1,20 @@
 package com.example.android.popularmovies.ui;
 
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
+
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.android.popularmovies.DetailActivity;
 import com.example.android.popularmovies.R;
 import com.example.android.popularmovies.model.Trailer;
-import com.example.android.popularmovies.utilities.JSONUtils;
-import com.example.android.popularmovies.utilities.NetworkUtils;
 
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
 public class TrailerFragment extends Fragment {
 
@@ -59,10 +50,8 @@ public class TrailerFragment extends Fragment {
 
         // Get a reference to the ImageView in the fragment layout
         final LinearLayout trailerInfoLayout = (LinearLayout) rootView.findViewById(R.id.trailers_linear_layout);
-        TextView mMovieTrailerLabel = (TextView) rootView.findViewById(R.id.trailers_label);
 
         if (mTrailers != null) {
-            mMovieTrailerLabel.setVisibility(View.VISIBLE);
 
             for (final Trailer trailer : mTrailers) {
                 if (trailer != null) {
@@ -89,65 +78,13 @@ public class TrailerFragment extends Fragment {
             }
 
         else {
-            mMovieTrailerLabel.setVisibility(View.INVISIBLE);
-            Log.v(TAG, "This fragment has a null list of image id's");
+                Log.v(TAG, "This fragment has a null list of image id's");
         }
 
         // Return the rootView
         return rootView;
 
         }
-
-
-
-
-
-
-
-
-
-        /*
-        // Inflate the trailer_list_item fragment layout
-        View rootView = inflater.inflate(R.layout.trailer_list_item, container, false);
-
-        // Get a reference to the ImageView in the fragment layout
-        final ImageView imageView = (ImageView) rootView.findViewById(R.id.body_part_image_view);
-
-        // If a list of image ids exists, set the image resource to the correct item in that list
-        // Otherwise, create a Log statement that indicates that the list was not found
-        if (mImageIds != null) {
-            // Set the image resource to the list item at the stored index
-            imageView.setImageResource(mImageIds.get(mListIndex));
-
-            // Set a click listener on the image view
-            imageView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    // Increment position as long as the index remains <= the size of the image ids list
-                    if (mListIndex < mImageIds.size() - 1) {
-                        mListIndex++;
-                    } else {
-                        // The end of list has been reached, so return to beginning index
-                        mListIndex = 0;
-                    }
-                    // Set the image resource to the new list item
-                    imageView.setImageResource(mImageIds.get(mListIndex));
-                }
-            });
-
-        } else {
-            Log.v(TAG, "This fragment has a null list of image id's");
-        }
-
-        // Return the rootView
-        return rootView;
-
-    } */
-
-    // Setter methods for keeping track of the list images this fragment can display and which image
-    // in the list is currently being displayed
-
-
 
     public void setTrailers(Trailer[] trailers) {
         mTrailers = new Trailer[trailers.length];

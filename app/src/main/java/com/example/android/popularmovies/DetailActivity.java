@@ -29,6 +29,7 @@ import com.example.android.popularmovies.database.AppDatabase;
 import com.example.android.popularmovies.database.MovieEntry;
 import com.example.android.popularmovies.model.Review;
 import com.example.android.popularmovies.model.Trailer;
+import com.example.android.popularmovies.ui.ReviewFragment;
 import com.example.android.popularmovies.ui.TrailerFragment;
 import com.example.android.popularmovies.utilities.JSONUtils;
 import com.example.android.popularmovies.utilities.NetworkUtils;
@@ -39,7 +40,7 @@ import com.example.android.popularmovies.ReviewAdapter.ReviewAdapterOnClickHandl
 
 import java.net.URL;
 
-public class DetailActivity extends AppCompatActivity implements TrailerAdapterOnClickHandler, ReviewAdapterOnClickHandler {
+public class DetailActivity extends AppCompatActivity {
 
     boolean isFavourite;
     private String favouriteTitle;
@@ -76,6 +77,7 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapterO
         if(savedInstanceState == null) {
 
             new FetchDetailTrailerTask2().execute();
+            new FetchDetailReviewTask().execute();
 
         }
 
@@ -172,7 +174,7 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapterO
          * The ForecastAdapter is responsible for linking our data with the Views that
          * will end up displaying our data.
          */
-        mReviewAdapter = new ReviewAdapter(this);
+       // mReviewAdapter = new ReviewAdapter(this);
         /* Setting the adapter attaches it to the RecyclerView in our layout.
         mReviewRecyclerView.setAdapter(mReviewAdapter);
         loadReviewData();*/
@@ -273,21 +275,23 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapterO
     /**
      * This method will make the error message visible and hide the trailer
      * View.
-     */
 
+/*
     private void showReviewErrorMessage() {
         /* First, hide the currently visible data */
-        mReviewRecyclerView.setVisibility(View.INVISIBLE);
+   /*     mReviewRecyclerView.setVisibility(View.INVISIBLE);
         /* Then, show the error */
-        mReviewLabel.setVisibility(View.INVISIBLE);
-    }
+ /*       mReviewLabel.setVisibility(View.INVISIBLE);
+    }*/
 
-    private void showTrailerErrorMessage() {
+   /* private void showTrailerErrorMessage() {
         /* First, hide the currently visible data */
-        mReviewRecyclerView.setVisibility(View.INVISIBLE);
+    /*    mReviewRecyclerView.setVisibility(View.INVISIBLE);
         /* Then, show the error */
-        mTrailerLabel.setVisibility(View.INVISIBLE);
-    }
+   /*     mTrailerLabel.setVisibility(View.INVISIBLE);
+    }*/
+
+   /*
 
     @Override
     public void onClick(Trailer singleTrailer) {
@@ -377,55 +381,69 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapterO
         @Override
         protected void onPostExecute(Trailer[] trailerData) {
 
-        // Retrieve list index values that were sent through an intent; use them to display the desired Android-Me body part image
-            // Use setListindex(int index) to set the list index for all BodyPartFragments
-
-            // Create a new head  TrailerFragment
-            TrailerFragment trailerFragment = new TrailerFragment();
-
-            // Set the list of image id's for the head fragment and set the position to the second image in the list
-            trailerFragment.setTrailers(trailerData);
-
-            // Add the fragment to its container using a FragmentManager and a Transaction
-            FragmentManager fragmentManager = getSupportFragmentManager();
-
-            fragmentManager.beginTransaction()
-                    .add(R.id.trailer_container, trailerFragment)
-                    .commit();
-
-
-            /*
             if (trailerData != null) {
-                for (final Trailer trailer : trailerData) {
-                    if (trailer != null) {
+                // Create a new head  TrailerFragment
+                TrailerFragment trailerFragment = new TrailerFragment();
 
-                    View mMovieTrailerItem = LayoutInflater.from(DetailActivity.this).inflate(
-                            R.layout.trailer_list_item, null);
+                // Set the list of image id's for the head fragment and set the position to the second image in the list
+                trailerFragment.setTrailers(trailerData);
 
-                    mMovieTrailerItem.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            openWebPage(trailer.getTrailerKey());
-                        }
-                    });
+                // Add the fragment to its container using a FragmentManager and a Transaction
+                FragmentManager fragmentManager = getSupportFragmentManager();
+
+                fragmentManager.beginTransaction()
+                        .add(R.id.trailer_container, trailerFragment)
+                        .commit();
+            }
+        }
+    }
 
 
-                    TextView mMovieTrailerTitle = (TextView) mMovieTrailerItem.findViewById(R.id.trailer_name);
-                    mMovieTrailerTitle.setText(trailer.getTrailerName());
+    public class FetchDetailReviewTask extends AsyncTask<String, Void, Review[]> {
 
-                    LinearLayout mMovieTrailerC = (LinearLayout) mMovieTrailerItem.findViewById(R.id.container_trailer);
-                        if (mMovieTrailerC != null) {
-                    mMovieTrailerC.addView(mMovieTrailerItem);}}
-                }
-
-            } else {
-                showTrailerErrorMessage();
-            }*/
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
         }
 
+        @Override
+        protected Review[] doInBackground(String... params) {
 
+            URL trailerRequestUrl = NetworkUtils.buildReviewUrl(id);
 
+            try {
+                String jsonReviewResponse = NetworkUtils.getResponseFromHttpUrl(trailerRequestUrl);
+
+                return JSONUtils.getReviewDataFromJson(DetailActivity.this, jsonReviewResponse);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Review[] reviewData) {
+            if (reviewData != null) {
+                // Create a new head  TrailerFragment
+                ReviewFragment reviewFragment = new ReviewFragment();
+
+                // Set the list of image id's for the head fragment and set the position to the second image in the list
+                reviewFragment.setReviews(reviewData);
+
+                // Add the fragment to its container using a FragmentManager and a Transaction
+                FragmentManager fragmentManager = getSupportFragmentManager();
+
+                fragmentManager.beginTransaction()
+                        .add(R.id.review_container, reviewFragment)
+                        .commit();
+            }
+        }
     }
+
+
+
+
 
     /*
     public class FetchDetailReviewTask extends AsyncTask<String, Void, Review[]> {

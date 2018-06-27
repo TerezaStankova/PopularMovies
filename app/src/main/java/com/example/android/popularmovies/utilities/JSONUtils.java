@@ -97,34 +97,36 @@ public class JSONUtils {
             }
         }
 
-        parsedTrailerData = new Trailer[a];
+        if (a > 0) {
 
-        int b = 0;
-        for (int i = 0; b < parsedTrailerData.length; i++) {
-            Log.d("ParsedData length", " is " + parsedTrailerData.length);
-            String name;
-            String key;
-            String whole_key;
-            String type;
+            parsedTrailerData = new Trailer[a];
 
-            /* Get the JSON object representing the trailer */
-            JSONObject trailerInfo = trailerArray.getJSONObject(i);
-            type = trailerInfo.getString(OWM_TYPE);
+            int b = 0;
+            for (int i = 0; b < parsedTrailerData.length; i++) {
+                Log.d("ParsedData length", " is " + parsedTrailerData.length);
+                String name;
+                String key;
+                String whole_key;
+                String type;
 
-            if (type.equals("Trailer")){
-                name = trailerInfo.getString(OWN_NAME);
-                Log.d("Name", " is " + i + name);
-                key = trailerInfo.getString(OWM_KEY);
-                whole_key =  "https://m.youtube.com/watch?v=" + key;
-                parsedTrailerData[b] = new Trailer(name, whole_key);
-                b++;
+                /* Get the JSON object representing the trailer */
+                JSONObject trailerInfo = trailerArray.getJSONObject(i);
+                type = trailerInfo.getString(OWM_TYPE);
+
+                if (type.equals("Trailer")){
+                    name = trailerInfo.getString(OWN_NAME);
+                    Log.d("Name", " is " + i + name);
+                    key = trailerInfo.getString(OWM_KEY);
+                    whole_key =  "https://m.youtube.com/watch?v=" + key;
+                    parsedTrailerData[b] = new Trailer(name, whole_key);
+                    b++;
+                }
+                else {
+                    name = trailerInfo.getString(OWN_NAME);
+                    Log.d("Type is not Trailer", " is " + type + name);
+                }
             }
-            else {
-                name = trailerInfo.getString(OWN_NAME);
-                Log.d("Type is not Trailer", " is " + type + name);
-            }
-
-        }
+        } else {parsedTrailerData = null;}
 
         return parsedTrailerData;
     }
@@ -144,21 +146,22 @@ public class JSONUtils {
         JSONObject reviewJson = new JSONObject(reviewJsonStr);
         JSONArray reviewArray = reviewJson.getJSONArray(OWM_RESULTS);
 
-        parsedReviewData = new Review[reviewArray.length()];
+        if (reviewArray.length() < 0) {
+            parsedReviewData = new Review[reviewArray.length()];
 
-        for (int i = 0; i < reviewArray.length(); i++) {
-            String author;
-            String content;
+            for (int i = 0; i < reviewArray.length(); i++) {
+                String author;
+                String content;
 
-            /* Get the JSON object representing the review */
-            JSONObject trailerInfo = reviewArray.getJSONObject(i);
+                /* Get the JSON object representing the review */
+                JSONObject trailerInfo = reviewArray.getJSONObject(i);
 
-            author = trailerInfo.getString(OWN_AUTHOR);
-            content = trailerInfo.getString(OWM_CONTENT);
-            parsedReviewData[i] = new Review(author, content);
+                author = trailerInfo.getString(OWN_AUTHOR);
+                content = trailerInfo.getString(OWM_CONTENT);
+                parsedReviewData[i] = new Review(author, content);
 
+            }
         }
-
         return parsedReviewData;
     }
 }

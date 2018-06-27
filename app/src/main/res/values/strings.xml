@@ -7,6 +7,9 @@
     <string name="detail_release_date_label">Release date:</string>
     <string name="detail_vote_label">Vote average:</string>
     <string name="detail_plot_label">Plot synopsis:</string>
+    <string name="trailers_label">Trailers:</string>
+    <string name="reviews_label">Reviews:</string>
+
     <!-- Content descriptions-->
     <string name="movie_poster_content_description">Movie poster</string>
 
@@ -14,17 +17,20 @@
     <string name="detail_error_message">Movie data not available</string>
     <string name="error_message">Data not available. Check your Internet connection.</string>
 
+    <!--Spinner options data-->
     <string-array name="spinner_data">
         <item>Order by popularity</item>
         <item>Order by rating</item>
         <item>Show my collection</item>
     </string-array>
 
-    <!--Used in overflow menu to refresh weather data-->
-    <string name="action_refresh">Refresh</string>
     <string name="actionbar_spinner">Spinner to order movies</string>
-    <string name="trailers_label">Trailers</string>
-    <string name="reviews">Reviews</string>
+
+    <!--Used in menu to refresh data-->
+    <string name="action_refresh">Refresh</string>
+
+
+    <!--Button to make movies (un)favourite-->
     <string name="new_favourite">NEW FAVOURITE?</string>
     <string name="my_favourite">MY FAVOURITE MOVIE</string>
 </resources>
