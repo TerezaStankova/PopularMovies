@@ -146,7 +146,7 @@ public class JSONUtils {
         JSONObject reviewJson = new JSONObject(reviewJsonStr);
         JSONArray reviewArray = reviewJson.getJSONArray(OWM_RESULTS);
 
-        if (reviewArray.length() < 0) {
+        if (reviewArray.length() > 0) {
             parsedReviewData = new Review[reviewArray.length()];
 
             for (int i = 0; i < reviewArray.length(); i++) {
