@@ -7,9 +7,7 @@ public class Trailer implements Parcelable{
     private String name;
     private String key;
 
-    /**
-     * No args constructor for use in serialization
-     */
+    /* No args constructor */
     public Trailer() {
     }
 
@@ -31,8 +29,6 @@ public class Trailer implements Parcelable{
     public void setTrailerKey(String key) {
         this.key = key;
     }
-
-
 
     private Trailer(Parcel in){
         name = in.readString();

@@ -219,11 +219,11 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
     private void setupViewModel() {
         showMovieDataView();
         MainViewModel viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
-        viewModel.getTasks().observe(this, new Observer<List<MovieEntry>>() {
+        viewModel.getMovies().observe(this, new Observer<List<MovieEntry>>() {
             @Override
-            public void onChanged(@Nullable List<MovieEntry> taskEntries) {
+            public void onChanged(@Nullable List<MovieEntry> movieEntries) {
                 Log.d("message", "Updating list of tasks from LiveData in ViewModel");
-                mMovieAdapter.setFavouriteMovies(taskEntries);
+                mMovieAdapter.setFavouriteMovies(movieEntries);
             }
         });
     }

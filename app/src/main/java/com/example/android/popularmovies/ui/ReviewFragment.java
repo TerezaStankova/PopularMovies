@@ -37,7 +37,7 @@ public class ReviewFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        // Load the saved state (the array of trailers) if there is one
+        // Load the saved state (the array of reviews) if there is one
         if (savedInstanceState != null) {
             mReviews = (Review[]) savedInstanceState.getParcelableArray(REVIEWS_ARRAY);
         }

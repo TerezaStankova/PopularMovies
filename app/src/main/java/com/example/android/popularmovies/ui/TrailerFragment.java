@@ -24,7 +24,7 @@ public class TrailerFragment extends Fragment {
     // Tag for logging
     private static final String TAG = "TrailerFragment";
 
-    // Variables to store a list of image resources and the index of the image that this fragment displays
+    // Variables to store an array of trailers
     private Trailer[] mTrailers;
 
     /**
@@ -48,7 +48,7 @@ public class TrailerFragment extends Fragment {
         // Inflate the trailer_list_item fragment layout
         View rootView = inflater.inflate(R.layout.fragment_trailers, container, false);
 
-        // Get a reference to the ImageView in the fragment layout
+        // Get a reference to the linear layout in the fragment layout
         final LinearLayout trailerInfoLayout = (LinearLayout) rootView.findViewById(R.id.trailers_linear_layout);
 
         if (mTrailers != null) {

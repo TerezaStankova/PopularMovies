@@ -83,10 +83,6 @@ public class DetailActivity extends AppCompatActivity {
         plot = movie.getPlot();
         title = movie.getTitle();
 
-        // call to loadTaskById, this is done in the ViewModel
-        DetailActivityViewModelFactory factory = new DetailActivityViewModelFactory(mDb, id);
-        final DetailActivityViewModel viewModel
-                = ViewModelProviders.of(this, factory).get(DetailActivityViewModel.class);
 
         if (savedInstanceState != null)
         {
@@ -208,7 +204,7 @@ public class DetailActivity extends AppCompatActivity {
                 // Create a new head  TrailerFragment
                 TrailerFragment trailerFragment = new TrailerFragment();
 
-                // Set the list of image id's for the head fragment and set the position to the second image in the list
+                // Set the trailers for the head fragment and set the position to the second image in the list
                 trailerFragment.setTrailers(trailerData);
 
                 // Add the fragment to its container using a FragmentManager and a Transaction
@@ -248,10 +244,10 @@ public class DetailActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Review[] reviewData) {
             if (reviewData != null) {
-                // Create a new head  TrailerFragment
+                // Create a new head  ReviewFragment
                 ReviewFragment reviewFragment = new ReviewFragment();
 
-                // Set the list of image id's for the head fragment and set the position to the second image in the list
+                // Set the reviews for the head fragment
                 reviewFragment.setReviews(reviewData);
 
                 // Add the fragment to its container using a FragmentManager and a Transaction
@@ -265,6 +261,7 @@ public class DetailActivity extends AppCompatActivity {
     }
 
 
+    //Define what happens when "favourite" button is clicked
     public void onSaveButtonClicked() {
 
         if (!isFavourite) {
@@ -273,7 +270,7 @@ public class DetailActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                         // insert new task
-                        mDb.movieDao().insertTask(movieEntry);
+                        mDb.movieDao().insertMovie(movieEntry);
                     Log.d("set task", "new favourite movie" + mDb.movieDao().titleById(id));
                 }
             });
@@ -296,6 +293,7 @@ public class DetailActivity extends AppCompatActivity {
 
     }
 
+    //Save info about "is favourite?"
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState)
     {

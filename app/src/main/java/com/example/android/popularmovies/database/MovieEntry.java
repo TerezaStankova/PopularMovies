@@ -77,6 +77,4 @@ public class MovieEntry {
     public void setPlot(String plot) {
         this.plot = plot;
     }
-
-
 }

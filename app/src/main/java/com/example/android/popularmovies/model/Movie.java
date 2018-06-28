@@ -16,9 +16,7 @@ public class Movie implements Parcelable{
     private String plot;
     private int id;
 
-    /**
-     * No args constructor for use in serialization
-     */
+    /* No args constructor */
     public Movie() {
     }
 
