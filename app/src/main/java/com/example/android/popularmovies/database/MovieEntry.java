@@ -8,7 +8,7 @@ import android.support.annotation.NonNull;
 @Entity(tableName = "movie")
 public class MovieEntry {
 
-    @PrimaryKey(autoGenerate = false)
+    @PrimaryKey
     @NonNull
     private int id;
     private String title;

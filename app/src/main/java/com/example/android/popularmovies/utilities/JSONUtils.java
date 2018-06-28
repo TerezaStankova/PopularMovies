@@ -28,7 +28,7 @@ public class JSONUtils {
         final String OWM_ID = "id";
 
         /* Movie array to hold each movie's info */
-        Movie[] parsedMovieData = null;
+        Movie[] parsedMovieData;
 
         JSONObject movieJson = new JSONObject(movieJsonStr);
         JSONArray movieArray = movieJson.getJSONArray(OWM_RESULTS);
@@ -75,7 +75,7 @@ public class JSONUtils {
         final String OWM_KEY = "key";
 
         /* Trailer array to hold each trailer's info */
-        Trailer[] parsedTrailerData = null;
+        Trailer[] parsedTrailerData;
 
         JSONObject trailerJson = new JSONObject(trailerJsonStr);
         JSONArray trailerArray = trailerJson.getJSONArray(OWM_RESULTS);

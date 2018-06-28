@@ -1,7 +1,5 @@
 package com.example.android.popularmovies;
 
-
-import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -37,11 +35,11 @@ import java.net.URL;
 
 public class DetailActivity extends AppCompatActivity {
 
-    boolean isFavourite;
+    private boolean isFavourite;
     private String favouriteTitle;
 
     // Fields for views
-    Button mButton;
+    private Button mButton;
 
     //Fields for movie's info
     private int id;
@@ -88,7 +86,6 @@ public class DetailActivity extends AppCompatActivity {
         {
             // Load variables here and overwrite the default values
             isFavourite = savedInstanceState.getBoolean("isFavourite", true);
-            Log.d("SaveInstance FAVOURITE","IS IT??" + isFavourite);
             setButton(isFavourite);
         }
         else{
@@ -97,15 +94,8 @@ public class DetailActivity extends AppCompatActivity {
             @Override
             public void run() {
                 favouriteTitle = mDb.movieDao().titleById(id);
-                Log.d("favourite Title", "tryFSucc" + favouriteTitle);
-                if (favouriteTitle == null) {
-                    isFavourite = false;
-                } else {
-                    isFavourite = true;
-                }
+                isFavourite = favouriteTitle != null;
                setButton(isFavourite);
-
-                Log.d("Is FAVOURITE?????","IS IT??" + isFavourite);
             }
         });}
 
@@ -126,10 +116,10 @@ public class DetailActivity extends AppCompatActivity {
     }
 
 
-    public void setButton(boolean isFavourite){
-        if (isFavourite == true){
-            mButton.setText("MY FAVOURITE MOVIE");}
-        else if (isFavourite == false) {mButton.setText("NEW FAVOURITE?");
+    private void setButton(boolean isFavourite){
+        if (isFavourite){
+            mButton.setText(R.string.my_favourite);}
+        else if (!isFavourite) {mButton.setText(R.string.new_favourite);
         }
     }
 
@@ -140,7 +130,7 @@ public class DetailActivity extends AppCompatActivity {
 
 
     private void loadMovieDetailData() {
-        if (isConnected() == true) {
+        if (isConnected()) {
             new FetchDetailTrailerTask2().execute();
             new FetchDetailReviewTask().execute();
         }
@@ -151,13 +141,10 @@ public class DetailActivity extends AppCompatActivity {
      * fail to fetch the movies.
      */
 
-    public boolean isConnected() {
+    private boolean isConnected() {
         ConnectivityManager cm = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        if (activeNetwork != null && activeNetwork.isConnectedOrConnecting()) {
-            return true;
-        }
-        return false;
+        return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
     }
 
     private void populateUI(Movie movie) {
@@ -174,7 +161,7 @@ public class DetailActivity extends AppCompatActivity {
         plotView.setText(movie.getPlot());
     }
 
-    public class FetchDetailTrailerTask2 extends AsyncTask<String, Void, Trailer[]> {
+    class FetchDetailTrailerTask2 extends AsyncTask<String, Void, Trailer[]> {
 
         @Override
         protected void onPreExecute() {
@@ -218,7 +205,7 @@ public class DetailActivity extends AppCompatActivity {
     }
 
 
-    public class FetchDetailReviewTask extends AsyncTask<String, Void, Review[]> {
+    class FetchDetailReviewTask extends AsyncTask<String, Void, Review[]> {
 
         @Override
         protected void onPreExecute() {
@@ -228,10 +215,10 @@ public class DetailActivity extends AppCompatActivity {
         @Override
         protected Review[] doInBackground(String... params) {
 
-            URL trailerRequestUrl = NetworkUtils.buildReviewUrl(id);
+            URL reviewRequestUrl = NetworkUtils.buildReviewUrl(id);
 
             try {
-                String jsonReviewResponse = NetworkUtils.getResponseFromHttpUrl(trailerRequestUrl);
+                String jsonReviewResponse = NetworkUtils.getResponseFromHttpUrl(reviewRequestUrl);
 
                 return JSONUtils.getReviewDataFromJson(DetailActivity.this, jsonReviewResponse);
 
@@ -262,7 +249,7 @@ public class DetailActivity extends AppCompatActivity {
 
 
     //Define what happens when "favourite" button is clicked
-    public void onSaveButtonClicked() {
+    private void onSaveButtonClicked() {
 
         if (!isFavourite) {
             final MovieEntry movieEntry = new MovieEntry(id, title, originalTitle, releaseDate, voteAverage, poster, plot);

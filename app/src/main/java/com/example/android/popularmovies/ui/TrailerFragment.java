@@ -19,7 +19,7 @@ import com.example.android.popularmovies.model.Trailer;
 public class TrailerFragment extends Fragment {
 
     // Final Strings to store state information about the trailers
-    public static final String TRAILERS = "trailers";
+    private static final String TRAILERS = "trailers";
 
     // Tag for logging
     private static final String TAG = "TrailerFragment";

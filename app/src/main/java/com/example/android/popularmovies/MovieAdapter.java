@@ -13,8 +13,6 @@ import com.example.android.popularmovies.database.MovieEntry;
 import com.example.android.popularmovies.model.Movie;
 import com.squareup.picasso.Picasso;
 
-import org.json.JSONObject;
-
 import java.util.List;
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHolder> {

@@ -2,7 +2,6 @@
     <string name="app_name">Popular Movies</string>
 
     <!-- Detail Activity-->
-    <string name="detail_title_label">Title:</string>
     <string name="detail_original_title_label">Original title:</string>
     <string name="detail_release_date_label">Release date:</string>
     <string name="detail_vote_label">Vote average:</string>

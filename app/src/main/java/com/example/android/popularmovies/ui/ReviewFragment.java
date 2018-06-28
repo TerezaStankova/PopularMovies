@@ -17,7 +17,7 @@ import com.example.android.popularmovies.model.Review;
 public class ReviewFragment extends Fragment {
 
     // Final Strings to store state information about the reviews
-    public static final String REVIEWS_ARRAY = "reviews";
+    private static final String REVIEWS_ARRAY = "reviews";
 
     // Tag for logging
     private static final String TAG = "ReviewFragment";

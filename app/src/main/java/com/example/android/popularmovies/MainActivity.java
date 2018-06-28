@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
     private AppDatabase mDb;
 
     // Final String to store state information about the movies
-    public static final String MOVIES = "movies";
+    private static final String MOVIES = "movies";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,30 +85,10 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
 
         if (savedInstanceState != null)
         {
-            // Load variables here and overrite the default values
+            // Load variables here and overwrite the default values
             optionSelected = savedInstanceState.getInt("mySpinner", 0);
             // Load the saved state (the array of trailers) if there is one
             movies = (Movie[]) savedInstanceState.getParcelableArray(MOVIES);
-            Log.d("SavedInstanceNotNull", optionSelected + "a");
-        }
-
-        /* Load the data. */
-        if(optionSelected != 2){
-            Log.d("Optionselected", optionSelected + "a");
-            if (movies != null){
-                showMovieDataView();
-                mMovieAdapter.setMovieData(null);
-                mMovieAdapter.setMovieData(movies);
-                Log.d("MoviesNotNull", optionSelected + "a");
-            }
-            else {
-                loadMovieData();
-                Log.d("MoviesNull", optionSelected + "a");
-            }
-        }
-
-        else {setupViewModel();
-            Log.d("setupViewModel", optionSelected + "a");
         }
     }
 
@@ -116,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
      * This method will tell some background method to get the data in the background.
      */
     private void loadMovieData() {
-            if (isConnected() == true) {
+            if (isConnected()) {
                 showMovieDataView();
                 new FetchMovieTask().execute();
             } else {
@@ -129,13 +109,10 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
      * fail to fetch the movies.
      */
 
-    public boolean isConnected() {
+    private boolean isConnected() {
         ConnectivityManager cm = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        if (activeNetwork != null && activeNetwork.isConnectedOrConnecting()) {
-            return true;
-        }
-        return false;
+        return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
     }
 
     /**
@@ -177,7 +154,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
         mErrorMessageDisplay.setVisibility(View.VISIBLE);
     }
 
-    public class FetchMovieTask extends AsyncTask<String, Void, Movie[]> {
+    class FetchMovieTask extends AsyncTask<String, Void, Movie[]> {
 
         @Override
         protected void onPreExecute() {
@@ -233,7 +210,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
     public boolean onCreateOptionsMenu(Menu menu) {
 
         newMenu = true;
-        Log.d("CreatingMenu", optionSelected + "newMenu" + newMenu);
 
         /* Use AppCompatActivity's method getMenuInflater to get a handle on the menu inflater */
         MenuInflater inflater = getMenuInflater();
@@ -257,8 +233,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
 
         spinner.setSelection(optionSelected);
 
-        Log.d("SelectionSet", optionSelected + "a");
-
        return true;
     }
 
@@ -267,8 +241,9 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
         int id = item.getItemId();
 
         if (id == R.id.action_refresh) {
+            if (optionSelected != 2){
            mMovieAdapter.setMovieData(null);
-           loadMovieData();
+           loadMovieData();}
            return true;
         }
         return super.onOptionsItemSelected(item);
@@ -277,8 +252,9 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-        if (newMenu == false) {
-            Log.d("onItemSelectedTriggered", position + "a");
+        optionSelected = position;
+
+        if (!newMenu) {
             switch (position) {
                 case 0:
                     // Order by popularity when the popularity menu item is clicked
@@ -302,7 +278,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
         } else {
             newMenu = false;
             if (movies == null){
-                Log.d("NEWmoviesNull", position + "newMenu" + newMenu);
                 switch (position) {
                     case 0:
                         // Order by popularity when the popularity menu item is clicked
@@ -324,7 +299,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
                         break;
                 }
             } else {
-                Log.d("NEWmoviesNotNull", position + "newMenu" + newMenu);
                 switch (position) {
                     case 0:
                         // Order by popularity when the popularity menu item is clicked
