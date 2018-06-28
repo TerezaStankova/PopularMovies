@@ -10,7 +10,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Scanner;
 
-import com.example.android.popularmovies.model.Movie;
+
+import com.example.android.popularmovies.BuildConfig;
 
 public class NetworkUtils {
     private static final String TAG = NetworkUtils.class.getSimpleName();
@@ -18,7 +19,7 @@ public class NetworkUtils {
     private static final String TOP_RATED_MOVIE_URL = "https://api.themoviedb.org/3/movie/top_rated";
     private static final String POPULAR_MOVIE_URL = "https://api.themoviedb.org/3/movie/popular";
     private static final String API_KEY = "api_key";
-    private static final String api_key = "ENTER_YOUR_API_KEY         ";
+    private static final String api_key = BuildConfig.API_KEY;
 
     private static String MOVIE_BASE_URL = POPULAR_MOVIE_URL;
 
