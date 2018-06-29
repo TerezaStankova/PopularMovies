@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -46,11 +47,17 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
     private boolean newMenu;
     private Spinner spinner;
     private Movie[] movies;
+    private GridLayoutManager layoutManager;
+    private Parcelable mListState;
+
 
     private AppDatabase mDb;
 
     // Final String to store state information about the movies
     private static final String MOVIES = "movies";
+
+    private static final String LIST_STATE_KEY = "list_state";
+    private static final String SPINNER = "mySpinner";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +70,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
 
         final int columns = getResources().getInteger(R.integer.gallery_columns);
 
-        GridLayoutManager layoutManager = new GridLayoutManager(this, columns, GridLayoutManager.VERTICAL, false);
+       layoutManager = new GridLayoutManager(this, columns, GridLayoutManager.VERTICAL, false);
 
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setHasFixedSize(true);
@@ -305,18 +312,21 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
                         NetworkUtils.changeBaseUrl("popular");
                         mMovieAdapter.setMovieData(null);
                         mMovieAdapter.setMovieData(movies);
+                        restoreLayoutManagerPosition();
                         break;
                     case 1:
                         // Order by top rated when the top rated menu item is clicked
                         NetworkUtils.changeBaseUrl("rating");
                         mMovieAdapter.setMovieData(null);
                         mMovieAdapter.setMovieData(movies);
+                        restoreLayoutManagerPosition();
                         break;
 
                     case 2:
                         //List favourite movies
                         mMovieAdapter.setMovieData(null);
                         setupViewModel();
+                        restoreLayoutManagerPosition();
                         break;
                 }
             }
@@ -325,12 +335,41 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
     public void onNothingSelected(AdapterView<?> arg0) {
     }
 
+    private void restoreLayoutManagerPosition() {
+        if (mListState != null) {
+            layoutManager.onRestoreInstanceState(mListState);
+        }
+    }
+
+
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState)
     {
         super.onSaveInstanceState(savedInstanceState);
-        savedInstanceState.putInt("mySpinner", spinner.getSelectedItemPosition());
+
+        // Save list state
+        mListState = layoutManager.onSaveInstanceState();
+        savedInstanceState.putParcelable(LIST_STATE_KEY, mListState);
+        savedInstanceState.putInt(SPINNER, spinner.getSelectedItemPosition());
         savedInstanceState.putParcelableArray(MOVIES, movies);
 
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle state) {
+        super.onRestoreInstanceState(state);
+
+        // Retrieve list state and list/item positions
+        if(state != null)
+            mListState = state.getParcelable(LIST_STATE_KEY);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (mListState != null) {
+            layoutManager.onRestoreInstanceState(mListState);
+        }
     }
 }

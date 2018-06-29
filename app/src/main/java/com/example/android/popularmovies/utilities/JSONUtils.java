@@ -49,6 +49,8 @@ public class JSONUtils {
             /* Get the JSON object representing the movie */
             JSONObject movieInfo = movieArray.getJSONObject(i);
 
+            //checkout GSON library for JSON parsing. Checkout this link : https://github.com/google/gson
+
             title = movieInfo.getString(OWN_TITLE);
             originalTitle = movieInfo.getString(OWM_ORIGINAL_TITLE);
             voteAverage = movieInfo.getDouble(OWM_VOTE_AVERAGE);

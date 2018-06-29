@@ -50,6 +50,8 @@ public class DetailActivity extends AppCompatActivity {
     private String poster;
     private String plot;
 
+    private static final String IS_FAVOURITE = "isFavourite";
+
     // Member variable for the Database
     private AppDatabase mDb;
 
@@ -85,7 +87,7 @@ public class DetailActivity extends AppCompatActivity {
         if (savedInstanceState != null)
         {
             // Load variables here and overwrite the default values
-            isFavourite = savedInstanceState.getBoolean("isFavourite", true);
+            isFavourite = savedInstanceState.getBoolean(IS_FAVOURITE, true);
             setButton(isFavourite);
         }
         else{
@@ -102,6 +104,8 @@ public class DetailActivity extends AppCompatActivity {
         populateUI(movie);
         Picasso.with(this)
                 .load(movie.getPoster())
+                .placeholder(R.mipmap.ic_launcher)
+                .error(R.mipmap.ic_launcher)
                 .into(posterIv);
 
         setTitle(title);
@@ -148,6 +152,8 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void populateUI(Movie movie) {
+
+        //findViewById calls - Try Butterknife library https://github.com/JakeWharton/butterknife
         TextView originalTitleView = (TextView) findViewById(R.id.original_title_tv);
         originalTitleView.setText(movie.getOriginalTitle());
 
@@ -162,6 +168,11 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     class FetchDetailTrailerTask2 extends AsyncTask<String, Void, Trailer[]> {
+
+
+        /*It is recommended to have this AsyncTask class into a separate file to make your code more maintainable.
+        https://xelsoft.wordpress.com/2014/11/28/asynctask-implementation-using-callback-interface/
+        */
 
         @Override
         protected void onPreExecute() {
@@ -259,6 +270,7 @@ public class DetailActivity extends AppCompatActivity {
                         // insert new task
                         mDb.movieDao().insertMovie(movieEntry);
                     Log.d("set task", "new favourite movie" + mDb.movieDao().titleById(id));
+                    //You should checkout Timber library (https://github.com/JakeWharton/timber) for easier logging.
                 }
             });
             mButton.setText(R.string.my_favourite);
@@ -285,6 +297,6 @@ public class DetailActivity extends AppCompatActivity {
     public void onSaveInstanceState(Bundle savedInstanceState)
     {
         super.onSaveInstanceState(savedInstanceState);
-        savedInstanceState.putBoolean("isFavourite", isFavourite);
+        savedInstanceState.putBoolean(IS_FAVOURITE, isFavourite);
     }
 }

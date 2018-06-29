@@ -91,6 +91,10 @@ public class NetworkUtils {
             Scanner scanner = new Scanner(in);
             scanner.useDelimiter("\\A");
 
+            /*You should checkout Volley library
+            *(https://developer.android.com/training/volley/) for making network requests.
+            * *They really make networking so much easy.*/
+
             boolean hasInput = scanner.hasNext();
             String response = null;
             if (hasInput) {
