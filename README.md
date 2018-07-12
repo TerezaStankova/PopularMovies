@@ -12,9 +12,9 @@ Would you like to **watch a movie** with your friends? **Which one to choose?** 
 
 ## Skills used to complete this project:
 + JSON
-+ Room: Entity, DAO, SQLite 
-+ LiveData, ModelView
++ **Room:** Entity, DAO, SQLite 
++ **LiveData**, ModelView
 + Build a clean UI.
 + Sync to a server.
-+ Leverage a third-party library (Picasso).
++ Leverage a third-party library (**Picasso**).
 + Use **Fragments** 
